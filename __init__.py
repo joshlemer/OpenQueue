@@ -13,3 +13,9 @@ db = MongoEngine(app)
 if __name__ == '__main__':
 	app.run()
 
+def register_blueprints(app):
+    # Prevents circular imports
+    from qme_src.views import rooms
+    app.register_blueprint(rooms)
+
+register_blueprints(app)
