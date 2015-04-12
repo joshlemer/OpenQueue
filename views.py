@@ -1,6 +1,7 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
+from flask.ext.login import current_user
 from qme_src.models import Room, Resource
 
 rooms = Blueprint('rooms', __name__, template_folder='templates')
@@ -10,7 +11,8 @@ class ListView(MethodView):
 
     def get(self):
         rooms = Room.objects.all()
-        return render_template('rooms/list.html', rooms=rooms)
+        #print current_user.email
+        return render_template('rooms/list.html', rooms=rooms, current_user=current_user)
 
 
 class DetailView(MethodView):

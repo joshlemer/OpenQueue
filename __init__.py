@@ -101,7 +101,7 @@ def index():
 
 @app.route('/login')
 def login():
-	return render_template('login.html')
+	return render_template('login.html', request=request)
     # return '''
     #     <form action="/login/check" method="post">
     #         <p>Username: <input name="username" type="text"></p>
@@ -116,13 +116,14 @@ def login_check():
     # validate username and password
     #user = User.get(request.form['username'])
     from qme_src.models import User
-    user = User.objects(email=request.form['username']).first()
+    user = User.objects(email=request.form['email']).first()
     if (user and user.password == request.form['password']):
-        login_user(user)
+        login_user(user, remember=True)
     else:
         flash('Username or password incorrect')
         return redirect(url_for('login'))
 
+    print current_user.email
     return redirect(url_for('index'))
 
 
@@ -131,10 +132,17 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-# @app.route('/room/<slug>/')
-# def room(slug):
-# 	from qme_src.models import Room
+@app.route('/signup', methods=['GET'])
+def getSignup():
+	return render_template('signup.html', request=request)
 
-# 	room = Room.objects.get(slug=slug)
+@app.route('/signup', methods=['POST'])
+def postSignup():
+	from qme_src.models import *
+	email, password, confirm_password = request.email, request.password, request.confirm_password
 
-# 	return room.name
+	if User.objects(email=email) == None and password == confirm_password:
+		print "new user!"
+
+	return render_template('signup.html', request=request)
+

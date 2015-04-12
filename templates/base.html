@@ -13,8 +13,21 @@
       <div class="container">
         <div class="navbar-header">
           <h2>
-              <a href="/" class="brand">QueueMe</a> <small>Starring Flask, MongoDB and MongoEngine</small>
+            <a href="/" class="brand">QueueMe
+          {{current_user.email}}
+          </a>
           </h2>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+
+          <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated() %}
+              <li><a href="/logout">Logout</a></li>
+            {% elif request.path != "/login"  %}
+              <li><a href="/login">Login</a></li>
+            {% endif %}
+          </ul>
+
         </div>
         <div class="navbar-collapse">
         </div><!--/.nav-collapse -->

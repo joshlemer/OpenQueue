@@ -5,12 +5,12 @@
 		{{ msg }}
 	{% endfor %}
 
-	<form action="/login/check" method="post">
+	<form action="/signup" method="post">
 		<p>Email: <input name="email" type="text"></p>
 		<p>Password: <input name="password" type="password"></p>
+		<p>Confirm Password: <input name="confirm_password" type="password"></p>
 		<input type="submit">
 	</form>
 
-	<a href="/signup">Sign up</a>
 {% endblock %}
 
