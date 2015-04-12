@@ -127,3 +127,11 @@ def login_check():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+# @app.route('/room/<slug>/')
+# def room(slug):
+# 	from qme_src.models import Room
+
+# 	room = Room.objects.get(slug=slug)
+
+# 	return room.name

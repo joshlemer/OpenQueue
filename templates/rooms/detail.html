@@ -9,10 +9,35 @@
 {% block content %}
   <p>{{ room.created_at.strftime('%H:%M %Y-%m-%d') }}</p>
   <hr>
-  <h2>Resources</h2>
+  {% for queue in room.queues %}
+    <div class="queue-container container">
+      <h3>Queue Name: {{ queue.name}}</h3>
+      <div class="row">
+      <div class="col-xs-12">
+        <h4>Resources:</h4>
+        <div class="col-xs-4 resources-container">
+          <div class="row">
+
+          {% for resource in queue.resources %}
+            <div class="col-xs-4 resource-info-container">
+              <div class="resource-info text-center" data-original-title="" data-toggle="popover" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">{{resource.name}}</div>
+            </div>
+          {% endfor %}
+          </div>
+        </div>
+        <div class="col-xs-8 queue-elements-container">
+          {% for queue_element in queue.queue_elements %}
+            {{ queue_element.user.email }}
+          {% endfor %}
+        </div>
+      </div>
+      </div>
+    </div>
+  {% endfor %}
   {% if room.resources %}
     {% for resource in room.resources %}
        <p>{{ resource.name }}</p>
+
        {# 
        <p><strong>{{ comment.author }}</strong> <small>on {{ comment.created_at.strftime('%H:%M %Y-%m-%d') }}</small></p>
       {{ comment.text }}

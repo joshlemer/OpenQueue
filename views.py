@@ -31,7 +31,7 @@ class DetailView(MethodView):
 
     def get(self, slug):
         context = self.get_context(slug)
-        return render_template('posts/detail.html', **context)
+        return render_template('rooms/detail.html', **context)
 
     def post(self, slug):
         context = self.get_context(slug)
@@ -50,5 +50,5 @@ class DetailView(MethodView):
         return render_template('rooms/detail.html', **context)
 
 # Register the urls
-#rooms.add_url_rule('/', view_func=ListView.as_view('list'))
-#rooms.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
+rooms.add_url_rule('/', view_func=ListView.as_view('list'))
+rooms.add_url_rule('/rooms/<slug>/', view_func=DetailView.as_view('detail'))

@@ -10,15 +10,28 @@ class User(db.Document):
 	isAdmin = db.BooleanField(default=False)
 	timestamp = db.DateTimeField(default=datetime.datetime.now())
 
-class Resource(db.EmbeddedDocument):
+class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
+	current_user = db.ReferenceField(User)
+
+class QueueElement(db.EmbeddedDocument):
+	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+	user = db.ReferenceField(User)
+	accepts = db.ListField(db.ReferenceField(Resource))
+
+class Queue(db.EmbeddedDocument):
+	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+	name = db.StringField(max_length=255, required=True)
+	resources = db.ListField(db.ReferenceField(Resource))
+	queue_elements = db.ListField(db.EmbeddedDocumentField('QueueElement'))
+
 
 class Room(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
-	resources = db.ListField(db.EmbeddedDocumentField('Resource'))
+	queues = db.ListField(db.EmbeddedDocumentField('Queue'))
 
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})
