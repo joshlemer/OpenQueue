@@ -10,6 +10,11 @@ class User(db.Document):
 	isAdmin = db.BooleanField(default=False)
 	timestamp = db.DateTimeField(default=datetime.datetime.now())
 
+	def is_active(self):
+		return self.active
+	def get_id(self):
+		return self.user_id
+
 class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)

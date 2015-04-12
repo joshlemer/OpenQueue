@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+	{% for msg in get_flashed_messages() %}
+		{{ msg }}
+	{% endfor %}
+
 	<form action="/login/check" method="post">
 		<p>Username: <input name="username" type="text"></p>
 		<p>Password: <input name="password" type="password"></p>

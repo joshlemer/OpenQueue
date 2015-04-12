@@ -79,8 +79,8 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(id):
-    return User.get(id)
-
+	from qme_src.models import User 
+	return User.objects(user_id=id).first()
 
 @app.route('/')
 def index():
@@ -114,11 +114,14 @@ def login():
 @app.route('/login/check', methods=['post'])
 def login_check():
     # validate username and password
-    user = User.get(request.form['username'])
+    #user = User.get(request.form['username'])
+    from qme_src.models import User
+    user = User.objects(email=request.form['username']).first()
     if (user and user.password == request.form['password']):
         login_user(user)
     else:
         flash('Username or password incorrect')
+        return redirect(url_for('login'))
 
     return redirect(url_for('index'))
 

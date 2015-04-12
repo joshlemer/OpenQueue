@@ -49,6 +49,11 @@ class DetailView(MethodView):
 
         return render_template('rooms/detail.html', **context)
 
+class QueueAPI(MethodView):
+
+	def join_queue():
+		pass
+
 # Register the urls
 rooms.add_url_rule('/', view_func=ListView.as_view('list'))
 rooms.add_url_rule('/rooms/<slug>/', view_func=DetailView.as_view('detail'))
