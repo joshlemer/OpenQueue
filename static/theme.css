@@ -23,6 +23,16 @@
   border-radius: 3px;
 }
 
+.navbar-email {
+  color: #93C54B;
+}
+
+.empty-current-user {
+  background-color: grey;
+  min-height: 70px;
+  border-radius: 3px;
+  margin: 0 10px 0 10px;
+}
 
 @import url("//fonts.googleapis.com/css?family=Roboto:400,500");
 /*!

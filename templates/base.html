@@ -14,7 +14,6 @@
         <div class="navbar-header">
           <h2>
             <a href="/" class="brand">QueueMe
-          {{current_user.email}}
           </a>
           </h2>
         </div>
@@ -22,6 +21,11 @@
 
           <ul class="nav navbar-nav navbar-right">
             {% if current_user.is_authenticated() %}
+              <li>
+                <span class="navbar-text">
+                Logged in as <span class='navbar-email'>{{ current_user.email }}</span>
+                </span>
+              </li>
               <li><a href="/logout">Logout</a></li>
             {% elif request.path != "/login"  %}
               <li><a href="/login">Login</a></li>

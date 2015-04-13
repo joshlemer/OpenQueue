@@ -6,6 +6,7 @@ from pymongo import read_preferences
 #from users import *
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
 app.config['SECRET_KEY'] = 'password'
@@ -33,7 +34,7 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
 	from qme_src.models import User
-	return User.objects.get(user_id=user_id)
+	return User.objects(id=user_id).first()
 
 @app.route('/hello/')
 @app.route('/hello/<name>/')
@@ -80,7 +81,7 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(id):
 	from qme_src.models import User 
-	return User.objects(user_id=id).first()
+	return User.objects(id=id).first()
 
 @app.route('/')
 def index():
@@ -113,18 +114,21 @@ def login():
 
 @app.route('/login/check', methods=['post'])
 def login_check():
-    # validate username and password
-    #user = User.get(request.form['username'])
-    from qme_src.models import User
-    user = User.objects(email=request.form['email']).first()
-    if (user and user.password == request.form['password']):
-        login_user(user, remember=True)
-    else:
-        flash('Username or password incorrect')
-        return redirect(url_for('login'))
+	# validate username and password
+	#user = User.get(request.form['username'])
+	from qme_src.models import User
+	user = User.objects(email=request.form['email']).first()
+	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] )
+	if (user and pw_check):
+	    login_user(user, remember=True)
+	    print "success"
+	else:
+	    flash('Username or password incorrect')
+	    print "fail"
+	    return redirect(url_for('login'))
 
-    print current_user.email
-    return redirect(url_for('index'))
+	return redirect(url_for('index'))
+
 
 
 @app.route('/logout')
@@ -138,11 +142,16 @@ def getSignup():
 
 @app.route('/signup', methods=['POST'])
 def postSignup():
-	from qme_src.models import *
-	email, password, confirm_password = request.email, request.password, request.confirm_password
+	from qme_src.models import User
+	email, password, confirm_password = request.form['email'], request.form['password'], request.form['confirm_password']
 
-	if User.objects(email=email) == None and password == confirm_password:
-		print "new user!"
+	pw_hash = bcrypt.generate_password_hash(password)
+	pw_check = bcrypt.check_password_hash(pw_hash, confirm_password)
 
-	return render_template('signup.html', request=request)
+	if (User.objects(email=email).count() == 0) and (pw_check):
+		new_user = User(email=email, password = pw_hash)
+		new_user.save()
+		login_user(new_user, remember=True)
+
+	return redirect(url_for('index'))
 

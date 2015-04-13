@@ -11,7 +11,10 @@
   <hr>
   {% for queue in room.queues %}
     <div class="queue-container container">
-      <h3>Queue Name: {{ queue.name}}</h3>
+      <div class="row">
+        <h3 class="col-xs-6">Queue Name: {{ queue.name}}</h3>
+        <div class="col-xs-3 col-xs-offset-3"><a href="#" class="btn btn-default">Join</a></div>
+      </div>
       <div class="row">
       <div class="col-xs-12">
         <h4>Resources:</h4>
@@ -20,14 +23,25 @@
 
           {% for resource in queue.resources %}
             <div class="col-xs-4 resource-info-container">
-              <div class="resource-info text-center" data-original-title="" data-toggle="popover" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">{{resource.name}}</div>
+              <div class="resource-info text-center" >
+                {{resource.name}}
+                {% if resource.current_user %}
+                  <div class="occupied-current-user">
+                    <span class="btn btn-primary">
+                      {{ resource.current_user.email[:4] }}
+                    </span>
+                  </div>
+                {% else %}
+                  <div class="empty-current-user"><span>Empty</span></div>
+                {% endif %}
+              </div>
             </div>
           {% endfor %}
           </div>
         </div>
         <div class="col-xs-8 queue-elements-container">
           {% for queue_element in queue.queue_elements %}
-            {{ queue_element.user.email }}
+            {{ queue_element.user.email[:4]  }}
           {% endfor %}
         </div>
       </div>

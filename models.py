@@ -1,6 +1,6 @@
 import datetime
 from flask import url_for
-from qme_src import db
+from qme_src import db, bcrypt
 
 class User(db.Document):
 	user_id = db.LongField(min_value=0)
@@ -12,9 +12,14 @@ class User(db.Document):
 	def is_active(self):
 		return self.active
 	def get_id(self):
-		return self.user_id
+		return self.id
 	def is_authenticated(self):
 		return True
+	def set_password(self, plaintext_password):
+		self.password = bcrypt.generate_password_hash(plaintext_password)
+		self.save()
+
+
 
 class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
@@ -31,6 +36,10 @@ class Queue(db.EmbeddedDocument):
 	name = db.StringField(max_length=255, required=True)
 	resources = db.ListField(db.ReferenceField(Resource))
 	queue_elements = db.ListField(db.EmbeddedDocumentField('QueueElement'))
+
+	def add_queue_element(self, queue_element):
+		pass
+
 
 
 class Room(db.Document):
