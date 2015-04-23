@@ -20,16 +20,21 @@ class User(db.Document):
 		self.save()
 
 
+class QueueElement(db.EmbeddedDocument):
+
+	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+	user = db.ReferenceField(User)
+	accepts = db.ListField(db.ReferenceField('Resource'))
 
 class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
-	current_user = db.ReferenceField(User)
+	current_queue_element = db.EmbeddedDocumentField('QueueElement')
 
-class QueueElement(db.EmbeddedDocument):
-	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
-	user = db.ReferenceField(User)
-	accepts = db.ListField(db.ReferenceField(Resource))
+	def release():
+		self.current_queue_element = None
+		self.save()
+
 
 class Queue(db.EmbeddedDocument):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
@@ -38,7 +43,21 @@ class Queue(db.EmbeddedDocument):
 	queue_elements = db.ListField(db.EmbeddedDocumentField('QueueElement'))
 
 	def add_queue_element(self, queue_element):
-		pass
+		self.queue_elements.push(queue_element)
+		self.save()
+		self.flush_queue()
+
+	def flush_queue(self):
+		for queue_element in self.queue_elements:
+			for resource in queue_elements.accepts:
+				if resource.current_queue_element is None:
+					resource.current_queue_element = queue_element
+					self.queue_elements.remove(queue_element)
+					resource.save()
+					self.save()
+
+
+
 
 
 
