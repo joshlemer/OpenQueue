@@ -3,10 +3,13 @@ from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask.ext.bcrypt import Bcrypt
 from pymongo import read_preferences
+from flask_restful import Api
 #from users import *
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+api = Api(app)
+
 
 app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
 app.config['SECRET_KEY'] = 'password'
@@ -16,6 +19,9 @@ db = MongoEngine(app)
 app.session_interface = MongoEngineSessionInterface(db)
 
 flask_bcrypt = Bcrypt(app)
+
+from Foo import RoomApi
+api.add_resource(RoomApi, '/api/rooms/<slug>')
 
 if __name__ == '__main__':
 	app.run()
