@@ -21,7 +21,7 @@ app.session_interface = MongoEngineSessionInterface(db)
 flask_bcrypt = Bcrypt(app)
 
 from Foo import RoomApi
-api.add_resource(RoomApi, '/api/rooms/<slug>')
+api.add_resource(RoomApi, '/api/rooms/<slug>/')
 
 if __name__ == '__main__':
 	app.run()
