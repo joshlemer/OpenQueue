@@ -4,7 +4,6 @@ from flask.ext.login import LoginManager, UserMixin, current_user, login_user, l
 from flask.ext.bcrypt import Bcrypt
 from pymongo import read_preferences
 from flask_restful import Api
-#from users import *
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -20,7 +19,7 @@ app.session_interface = MongoEngineSessionInterface(db)
 
 flask_bcrypt = Bcrypt(app)
 
-from Foo import RoomApi
+from ApiHandlers import RoomApi
 api.add_resource(RoomApi, '/api/rooms/<slug>/')
 
 if __name__ == '__main__':
