@@ -2,6 +2,7 @@ import datetime
 from flask import url_for
 from qme_src import db, bcrypt
 from bson import json_util
+import ast
 
 class User(db.Document):
 	user_id = db.LongField(min_value=0)
@@ -10,6 +11,12 @@ class User(db.Document):
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
 	timestamp = db.DateTimeField(default=datetime.datetime.now())
+	def to_json(self):
+		return { 
+			'user_id': self.user_id, 
+			'email': self.email
+			}
+
 	def is_active(self):
 		return self.active
 	def get_id(self):
@@ -29,6 +36,8 @@ class QueueElement(db.EmbeddedDocument):
 	def to_json(self):
 		data = self.to_mongo()
 		data['accepts'] = [r.to_json() for r in self.accepts]
+		data['user'] = self.user.to_json()
+		#data['user'] = {'email': 'joshlemer@gmail.com'}
 		return data
 
 class Resource(db.Document):
