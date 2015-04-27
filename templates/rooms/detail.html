@@ -36,21 +36,13 @@
             </div>
           </div>
           <div class="col-xs-8 queue-elements-container">
-            [[ queue.queue_elements ]]
+            <p>[[ queue.queue_elements[0].user.email.substring(0, 4) ]] </p>
           </div>
         </div>
         </div>
       </div>
-    {#{% endfor %}#}
-    {% if room.resources %}
-      {% for resource in room.resources %}
-         <p>{{ resource.name }}</p>
-
-         {# 
-         <p><strong>{{ comment.author }}</strong> <small>on {{ comment.created_at.strftime('%H:%M %Y-%m-%d') }}</small></p>
-        {{ comment.text }}
-          #}
-      {% endfor %}
-  {% endif %}
+    <div ng-show="room.data.resources">
+         <p ng-repeat="resource in room.data.resources">[[ resource.name ]]</p>
+    </div>
   </div>
 {% endblock %}
