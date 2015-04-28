@@ -4,7 +4,13 @@ var app = angular.module('app', ['ngRoute'])
 
 	})
 	.config(['$routeProvider', function($routeProvider) {
-	    $routeProvider.when('/rooms/:roomName', {
+	    $routeProvider
+	    .when('/', {
+	        controller: 'RoomListController',
+	        controllerAs: 'list',
+	        templateUrl: 'static/list.html'
+	    })
+	    .when('/rooms/:roomName', {
 	        controller: 'RoomController',
 	        controllerAs: 'room',
 	        templateUrl: 'static/detail.html'
@@ -27,4 +33,10 @@ var app = angular.module('app', ['ngRoute'])
             $http.post('/api/rooms/' + $routeParams.roomName + '/' + queueName + '/');
         };
 
+    }])
+    .controller('RoomListController', ['$http', function($http){
+        var value = this;
+        $http.get('/api/rooms/').success(function(data){
+            value.data = data;
+        });
     }]);

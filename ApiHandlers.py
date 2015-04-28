@@ -35,3 +35,12 @@ class JoinQueueApi(flask_restful.Resource):
 				room.save()
 
 
+class RoomsListApi(flask_restful.Resource):
+	def get(self):
+		rooms = [{
+			'name': room.name,
+			'_id': str(room.id),
+			'slug': room.slug
+		} for room in Room.objects]
+		return rooms
+

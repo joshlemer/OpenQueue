@@ -1,4 +1,33 @@
 
+.member {
+    background-color: #D6DADC;
+    border-radius: 3px;
+    color: #4D4D4D;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 30px;
+    margin: 0px 4px 4px 0px;
+    overflow: hidden;
+    position: relative;
+    width: 30px;
+    text-decoration: none;
+    -moz-user-select: none;
+    z-index: 0;
+}
+.member-initials {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    height: 30px;
+    left: 0px;
+    line-height: 30px;
+    overflow: hidden;
+    position: absolute;
+    text-align: center;
+    top: 0px;
+    width: 100%;
+}
 .queue-container {
   background-color: #F8F5F0;
   border-radius: 3px;
