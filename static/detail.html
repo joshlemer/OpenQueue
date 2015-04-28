@@ -1,0 +1,39 @@
+<div class="page-header">
+    <h1>[[room.data.name]]</h1>
+</div>
+<p>[[ room.data.created_at.$date | date ]]</p>
+<hr>
+<div ng-repeat="queue in room.data.queues" class="queue-container container">
+    <div class="row">
+        <h3 class="col-xs-6">Queue Name: [[ queue.name ]]</h3>
+        <div class="col-xs-3 col-xs-offset-3"><a href="#" class="btn btn-default">Join</a></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>Resources:</h4>
+            <div class="col-xs-4 resources-container">
+                <div class="row">
+
+                    <div ng-repeat="resource in queue.resources" class="col-xs-4 resource-info-container">
+                        <div class="resource-info text-center" >
+                            [[ resource.name ]]
+                            <div ng-show="resource.current_user" class="occupied-current-user">
+                  <span class="btn btn-primary">
+                    [[ resource.current_user.email ]]
+                  </span>
+                            </div>
+
+                            <div ng-hide="resource.current_user" class="empty-current-user"><span>Empty</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-8 queue-elements-container">
+                <p>[[ queue.queue_elements[0].user.email.substring(0, 4) ]] </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-show="room.data.resources">
+    <p ng-repeat="resource in room.data.resources">[[ resource.name ]]</p>
+</div>
