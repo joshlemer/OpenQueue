@@ -35,11 +35,14 @@ class QueueElement(db.EmbeddedDocument):
 	user = db.ReferenceField(User)
 	accepts = db.ListField(db.ReferenceField('Resource'))
 
-	def to_json_dict(self):
+	def to_json_dict(self, follow_refs=True):
 		data = self.to_mongo()
 		data['user'] = self.user.to_json_dict()
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
-		data['accepts'] = [ r.to_json_dict() for r in self.accepts ]
+		if follow_refs:
+			data['accepts'] = [ r.to_json_dict() for r in self.accepts ]
+		else:
+			data['accepts'] = [{'name': r.name, '_id': str(r.id)} for r in self.accepts]
 
 		return data
 
@@ -53,7 +56,7 @@ class Resource(db.Document):
 		data['_id'] = str(data['_id'])
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 		if self.current_queue_element :
-			data['current_queue_element'] =  self.current_queue_element.to_json_dict()
+			data['current_queue_element'] =  self.current_queue_element.to_json_dict(follow_refs=False)
 
 		return data
 
@@ -76,8 +79,7 @@ class Queue(db.EmbeddedDocument):
 		return data
 
 	def add_queue_element(self, queue_element):
-		self.queue_elements.push(queue_element)
-		self.save()
+		self.queue_elements.append(queue_element)
 		self.flush_queue()
 
 	def flush_queue(self):
@@ -87,7 +89,7 @@ class Queue(db.EmbeddedDocument):
 					resource.current_queue_element = queue_element
 					self.queue_elements.remove(queue_element)
 					resource.save()
-					self.save()
+
 
 class Room(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)

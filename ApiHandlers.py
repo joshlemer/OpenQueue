@@ -30,8 +30,8 @@ class JoinQueueApi(flask_restful.Resource):
 				queue = None
 
 			if queue:
-				queue_element = QueueElement(user=current_user, accepts=queue.resources)
+				queue_element = QueueElement(user=User.objects(email=current_user.email).first(), accepts=queue.resources)
 				queue.add_queue_element(queue_element)
-
+				room.save()
 
 

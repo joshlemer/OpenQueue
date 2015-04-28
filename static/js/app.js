@@ -22,4 +22,9 @@ var app = angular.module('app', ['ngRoute'])
             value.title=data;
             value.data = data;
         });
+        this.join = function(queueName) {
+            window.alert ( "you're joining the " + $routeParams.roomName + " " + queueName + " queue!");
+            $http.post('/api/rooms/' + $routeParams.roomName + '/' + queueName + '/');
+        };
+
     }]);
