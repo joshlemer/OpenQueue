@@ -14,13 +14,13 @@
     <script type="text/javascript" src="/static/js/app.js"></script>
 </head>
 
-<body ng-app="app">
+<body >
 {%- block topbar -%}
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <h2>
-                <a href="/" class="brand">QueueMe
+                <a href="/#/" class="brand">QueueMe
                 </a>
             </h2>
         </div>
@@ -49,8 +49,9 @@
 
 <div class="container">
     <div class="content">
-        <div ng-view></div>
-        {% block content %}{% endblock %}
+        {% block content %}
+            <div ng-view ng-app="app"></div>
+        {% endblock %}
     </div>
 </div>
 {% block js_footer %}{% endblock %}

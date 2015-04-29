@@ -11,8 +11,7 @@ class ListView(MethodView):
 
     def get(self):
         rooms = Room.objects.all()
-        #print current_user.email
-        return render_template('rooms/list.html', rooms=rooms, current_user=current_user)
+        return render_template('base.html', rooms=rooms, current_user=current_user)
 
 
 class DetailView(MethodView):
