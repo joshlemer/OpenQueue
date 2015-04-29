@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
 def register_blueprints(app):
     # Prevents circular imports
-    from qme_src.views import rooms
+    from views import rooms
     app.register_blueprint(rooms)
 
 
@@ -40,13 +40,13 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-	from qme_src.models import User
+	from models import User
 	return User.objects(id=user_id).first()
 
 @app.route('/hello/')
 @app.route('/hello/<name>/')
 def josh(name=None):
-	from qme_src.models import Room
+	from models import Room
 	roomString = ""
 	rooms = Room.objects
 
@@ -87,7 +87,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(id):
-	from qme_src.models import User 
+	from models import User
 	return User.objects(id=id).first()
 
 @app.route('/')
@@ -123,7 +123,7 @@ def login():
 def login_check():
 	# validate username and password
 	#user = User.get(request.form['username'])
-	from qme_src.models import User
+	from models import User
 	user = User.objects(email=request.form['email']).first()
 	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] )
 	if (user and pw_check):
@@ -149,7 +149,7 @@ def getSignup():
 
 @app.route('/signup', methods=['POST'])
 def postSignup():
-	from qme_src.models import User
+	from models import User
 	email, password, confirm_password = request.form['email'], request.form['password'], request.form['confirm_password']
 
 	pw_hash = bcrypt.generate_password_hash(password)
