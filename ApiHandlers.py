@@ -22,7 +22,7 @@ class RoomApi(flask_restful.Resource):
 class JoinQueueApi(flask_restful.Resource):
 	def post(self, room_slug, queue_name):
 		room = Room.objects(slug=room_slug).first()
-		if current_user and room:
+		if current_user.is_authenticated() and room:
 			queues = [q for q in room.queues if q.name == queue_name]
 			if len(queues):
 				queue = queues[0]
@@ -30,8 +30,16 @@ class JoinQueueApi(flask_restful.Resource):
 				queue = None
 
 			if queue:
-				queue_element = QueueElement(user=current_user, accepts=queue.resources)
+				queue_element = QueueElement(user=User.objects(email=current_user.email).first(), accepts=queue.resources)
 				queue.add_queue_element(queue_element)
+				room.save()
 
 
+class RoomsListApi(flask_restful.Resource):
+	def get(self):
+		return [{
+			'name': room.name,
+			'_id': str(room.id),
+			'slug': room.slug
+		} for room in Room.objects]
 
