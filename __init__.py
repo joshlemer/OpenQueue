@@ -1,3 +1,4 @@
+import os
 from flask import Flask, flash, render_template, redirect, session, url_for, request, get_flashed_messages
 from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
@@ -9,7 +10,11 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 api = Api(app)
 
+MONGO_URL = os.environ.get('MONGO_URL')
+if not MONGO_URL:
+    MONGO_URL = 'mongodb://localhost:27017/qme';
 
+app.config['MONGO_URI'] = MONGO_URL
 app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
 app.config['SECRET_KEY'] = 'password'
 app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
