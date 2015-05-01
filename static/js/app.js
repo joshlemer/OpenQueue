@@ -27,7 +27,6 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
         $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
             value.title=data;
             value.data = data;
-            $("[data-toggle=popover]").popover();
             $scope.the_room = data;
         });
         this.join = function(queueName) {
@@ -40,26 +39,29 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
         $http.get('/api/rooms/').success(function(data){
             value.data = data;
         });
+    }])
+    .controller('ResourceController', ['$http', '$scope', function($http, $scope){
+
+        $scope.queue_element = $scope.resource.current_queue_element;
+
+    }])
+    .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
+
+        $scope.delete = function() {
+            var url = '/api/rooms/' + $scope.the_room.name + '/queues/' + $scope.queue.name
+            $http.delete('/api/' + queue_elements/' + $scope.queue_element._id + '/').success( function(){
+                console.log('success');
+            });
+        };
+
     }]);
-//    .directive('toggle', function(){
-//  return {
-//    restrict: 'A',
-//    link: function(scope, element, attrs){
-//      if (attrs.toggle=="tooltip"){
-//        $(element).tooltip();
-//      }
-//      if (attrs.toggle=="popover"){
-//        $(element).popover();
-//      }
-//    }
-//  };
 app.directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
                 var myPopover = $popover(element, {
                     title: 'My Title',
-                    contentTemplate: 'example.html',
+                    contentTemplate: '/static/hello.tpl.html',
                     html: true,
                     trigger: 'manual',
                     autoClose: true,
@@ -71,3 +73,10 @@ app.directive("customPopover", ["$popover", "$compile", function($popover, $comp
             }
         }
     }]);
+
+app.directive('queueElement', ['$http', '$scope', function($http, $scope) {
+
+    $scope.leave() = function() {
+
+    };
+}]);

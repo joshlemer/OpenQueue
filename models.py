@@ -1,8 +1,9 @@
 import datetime, time
 from flask import url_for
 from qme_src import db, bcrypt
-from bson import json_util
+from bson import json_util, ObjectId
 import ast
+from slugify import UniqueSlugify
 
 class User(db.Document):
 	user_id = db.LongField(min_value=0)
@@ -11,6 +12,9 @@ class User(db.Document):
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
 	timestamp = db.DateTimeField(default=datetime.datetime.now())
+
+	def __unicode__(self):
+		return self.email
 
 	def to_json_dict(self):
 		data = self.to_mongo()
@@ -29,14 +33,24 @@ class User(db.Document):
 		self.password = bcrypt.generate_password_hash(plaintext_password)
 		self.save()
 
-class QueueElement(db.EmbeddedDocument):
+class QueueElement(db.Document):
 
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	user = db.ReferenceField(User)
 	accepts = db.ListField(db.ReferenceField('Resource'))
 
+	def __unicode__(self):
+		result = ''
+		if self.user:
+			result += self.user.email + ' '
+		result += 'Accepts: '
+		for acceptable in self.accepts:
+			result += str(acceptable)
+		return result
+
 	def to_json_dict(self, follow_refs=True):
 		data = self.to_mongo()
+		data['_id'] = str(data['_id'])
 		data['user'] = self.user.to_json_dict()
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 		if follow_refs:
@@ -49,7 +63,10 @@ class QueueElement(db.EmbeddedDocument):
 class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
-	current_queue_element = db.EmbeddedDocumentField('QueueElement')
+	current_queue_element = db.ReferenceField('QueueElement', reverse_delete_rule=db.NULLIFY)
+
+	def __unicode__(self):
+		return self.name
 
 	def to_json_dict(self):
 		data = self.to_mongo()
@@ -64,11 +81,16 @@ class Resource(db.Document):
 		self.current_queue_element = None
 		self.save()
 
-class Queue(db.EmbeddedDocument):
+class Queue(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
+	slug = db.StringField(max_length=255, required=True)
 	resources = db.ListField(db.ReferenceField(Resource))
-	queue_elements = db.ListField(db.EmbeddedDocumentField('QueueElement'))
+	room = db.ReferenceField('Room')
+	queue_elements = db.ListField(db.ReferenceField('QueueElement', reverse_delete_rule=db.PULL))
+
+	def __unicode__(self):
+		return self.name
 
 	def to_json_dict(self):
 		data = self.to_mongo()
@@ -88,6 +110,7 @@ class Queue(db.EmbeddedDocument):
 				if resource.current_queue_element is None:
 					resource.current_queue_element = queue_element
 					self.queue_elements.remove(queue_element)
+					resource.current_queue_element.save()
 					resource.save()
 
 
@@ -95,10 +118,14 @@ class Room(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
-	queues = db.ListField(db.EmbeddedDocumentField('Queue'))
+	queues = db.ListField(db.ReferenceField('Queue'), reverse_delete_rule=PULL)
 
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})
+
+	def save(self, *args, **kwargs):
+		self.slug = UniqueSlugify(uids=[r.slug for r in Room.objects])(self.name)
+		super(Room, self).save(*args, **kwargs)
 
 	def __unicode__(self):
 		return self.name

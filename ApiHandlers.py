@@ -43,3 +43,11 @@ class RoomsListApi(flask_restful.Resource):
 			'slug': room.slug
 		} for room in Room.objects]
 
+
+class QueueElementApi(flask_restful.Resource):
+	def delete(self, queue_element_id):
+		queue_element = QueueElement.objects(id=queue_element_id)
+		if current_user.is_authenticated() and current_user.id == queue_element.user.id:
+			queue_element.delete()
+
+

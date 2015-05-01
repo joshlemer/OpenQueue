@@ -21,8 +21,9 @@ flask_bcrypt = Bcrypt(app)
 
 from ApiHandlers import *
 api.add_resource(RoomApi, '/api/rooms/<slug>/')
-api.add_resource(JoinQueueApi, '/api/rooms/<room_slug>/<queue_name>/')
+api.add_resource(JoinQueueApi, '/api/rooms/<room_slug>/queues/<queue_name>/')
 api.add_resource(RoomsListApi, '/api/rooms/')
+api.add_resource(QueueElementApi, '/api/rooms/<room_slug>/queues/<queue_name>/queue_elements/<queue_element_id>/')
 
 if __name__ == '__main__':
 	app.run()
