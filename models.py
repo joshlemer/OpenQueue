@@ -92,8 +92,13 @@ class Queue(db.Document):
 	def __unicode__(self):
 		return self.name
 
+	def save(self, *args, **kwargs):
+		self.slug = UniqueSlugify(uids=[q.slug for q in (self.room.queues if self.room else [] ) ])(self.name)
+		super(Queue, self).save(*args, **kwargs)
+
 	def to_json_dict(self):
 		data = self.to_mongo()
+		data['_id'] = str(self.id)
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 		data['resources'] = [ r.to_json_dict() for r in self.resources ]
 		data['queue_elements'] = [ qe.to_json_dict() for qe in self.queue_elements ]
@@ -118,7 +123,7 @@ class Room(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
-	queues = db.ListField(db.ReferenceField('Queue'), reverse_delete_rule=PULL)
+	queues = db.ListField(db.ReferenceField('Queue', reverse_delete_rule=db.PULL))
 
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})

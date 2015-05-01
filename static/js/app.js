@@ -29,8 +29,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             value.data = data;
             $scope.the_room = data;
         });
-        this.join = function(queueName) {
-            $http.post('/api/rooms/' + $routeParams.roomName + '/' + queueName + '/');
+        this.join = function(queueSlug) {
+            $http.post('/api/queues/' + queueSlug + '/join/');
         };
 
     }])
@@ -48,8 +48,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
     .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
 
         $scope.delete = function() {
-            var url = '/api/rooms/' + $scope.the_room.name + '/queues/' + $scope.queue.name
-            $http.delete('/api/' + queue_elements/' + $scope.queue_element._id + '/').success( function(){
+            $http.delete('/api/').success( function(){
                 console.log('success');
             });
         };
