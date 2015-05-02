@@ -135,10 +135,6 @@ class Queue(db.Document):
 					break
 
 
-
-
-
-
 class Room(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
