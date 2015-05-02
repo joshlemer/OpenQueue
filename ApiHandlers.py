@@ -2,7 +2,6 @@ import flask_restful
 from flask import abort
 from models import *
 from flask.ext.login import current_user
-import ast
 
 
 class RoomApi(flask_restful.Resource):
@@ -24,20 +23,6 @@ class JoinQueueApi(flask_restful.Resource):
 			queue_element.save()
 			queue.add_queue_element(queue_element)
 			queue.save()
-
-		# room = Room.objects(slug=room_slug).first()
-		# if current_user.is_authenticated() and room:
-		# 	queues = [q for q in room.queues if q.name == queue_name]
-		# 	if len(queues):
-		# 		queue = queues[0]
-		# 	else:
-		# 		queue = None
-        #
-		# 	if queue:
-		# 		queue_element = QueueElement(user=User.objects(email=current_user.email).first(), accepts=queue.resources)
-		# 		queue.add_queue_element(queue_element)
-		# 		room.save()
-
 
 class RoomsListApi(flask_restful.Resource):
 	def get(self):
