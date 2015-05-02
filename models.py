@@ -36,7 +36,7 @@ class User(db.Document):
 class QueueElement(db.Document):
 
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
-	user = db.ReferenceField(User)
+	user = db.ReferenceField('User')
 	accepts = db.ListField(db.ReferenceField('Resource'))
 
 	def __unicode__(self):
@@ -81,11 +81,16 @@ class Resource(db.Document):
 		self.current_queue_element = None
 		self.save()
 
+	def remove_queue_element(self, queue_element):
+		current_queue_element = self.current_queue_element
+		if current_queue_element and current_queue_element.id == queue_element.id:
+			self.update(unset__current_queue_element=1)
+
 class Queue(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
-	resources = db.ListField(db.ReferenceField(Resource))
+	resources = db.ListField(db.ReferenceField('Resource'))
 	room = db.ReferenceField('Room')
 	queue_elements = db.ListField(db.ReferenceField('QueueElement', reverse_delete_rule=db.PULL))
 
@@ -109,6 +114,14 @@ class Queue(db.Document):
 		self.queue_elements.append(queue_element)
 		self.flush_queue()
 
+	def remove_queue_element(self, queue_element):
+		if queue_element in self.queue_elements:
+			self.queue_elements.remove(queue_element)
+		else:
+			for resource in self.resources:
+				resource.remove_queue_element(queue_element)
+		self.flush_queue()
+
 	def flush_queue(self):
 		for queue_element in self.queue_elements:
 			for resource in queue_element.accepts:
@@ -117,6 +130,7 @@ class Queue(db.Document):
 					self.queue_elements.remove(queue_element)
 					resource.current_queue_element.save()
 					resource.save()
+					self.save()
 
 
 class Room(db.Document):

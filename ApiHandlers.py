@@ -9,10 +9,7 @@ class RoomApi(flask_restful.Resource):
 	def get(self, slug):
 		room = Room.objects(slug=slug).first()
 		if room:
-
-			# return User.objects(email='joshlemer@gmail.com').first().to_json_dict()
 			return room.to_json_dict()
-			return ast.literal_eval(room.to_json())
 		abort(404)
 
 	def post(self):
@@ -52,11 +49,10 @@ class RoomsListApi(flask_restful.Resource):
 
 
 class QueueElementApi(flask_restful.Resource):
-	def delete(self, queue_element_id):
-		queue_element = QueueElement.objects(id=queue_element_id)
-		print 'asdf'
-		if current_user.is_authenticated() and current_user.id == queue_element.user.id:
-			print 'here'
-			queue_element.delete()
+	def delete(self, queue_id, queue_element_id):
+		queue = Queue.objects(id=queue_id).first()
+		queue_element = QueueElement.objects(id=queue_element_id).first()
+		if current_user.is_authenticated() and current_user.id == queue_element.user.id and queue:
+			queue.remove_queue_element(queue_element)
 
 

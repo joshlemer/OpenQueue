@@ -48,7 +48,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
     .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
 
         $scope.delete = function() {
-            $http.delete('/api/').success( function(){
+            $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id).success( function(){
                 console.log('success');
             });
         };
