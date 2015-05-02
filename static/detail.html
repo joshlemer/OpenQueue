@@ -34,10 +34,12 @@
                 </div>
             </div>
             <div class="col-xs-8 queue-elements-container">
-                <div class="member" ng-repeat="queue_element in queue.queue_elements">
-                    <span class="member-initials" title="[[queue_element.user.email]]">
-                        [[ queue_element.user.email.substring(0, 2) ]]
-                    </span>
+                <div ng-repeat="queue_element in queue.queue_elements" ng-controller="QueueElementController as queueElement" class="occupied-current-user">
+                    <div data-content-template="static/hello.tpl.html" data-animation="am-flip-x" data-auto-close="1" bs-popover popover-placement="right" type="button" class="member" data-container="body" title="popover title" data-placement="right" data-html="true">
+                        <span class="member-initials" title="[[resource.current_queue_element.user.email]]">
+                            [[ queue_element.user.email.substring(0, 2) ]]
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
