@@ -54,6 +54,11 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
     }])
     .controller('NewRoomController', ['$scope', '$http', function($scope, $http) {
         $scope.submit = function(newroom) {
+            $http.post('/api/rooms/', {
+                data: newroom
+            }).success(function() {
+                location.reload();
+            });
             console.log(newroom);
         };
     }])

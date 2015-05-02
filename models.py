@@ -112,6 +112,7 @@ class Queue(db.Document):
 
 	def add_queue_element(self, queue_element):
 		self.queue_elements.append(queue_element)
+		self.save()
 		self.flush_queue()
 
 	def remove_queue_element(self, queue_element):
@@ -128,10 +129,14 @@ class Queue(db.Document):
 			for resource in queue_element.accepts:
 				if resource.current_queue_element is None:
 					resource.current_queue_element = queue_element
-					self.queue_elements.remove(queue_element)
-					resource.current_queue_element.save()
 					resource.save()
+					self.queue_elements.remove(queue_element)
 					self.save()
+					break
+
+
+
+
 
 
 class Room(db.Document):

@@ -1,7 +1,8 @@
 import flask_restful
-from flask import abort
+from flask import abort, request
 from models import *
 from flask.ext.login import current_user
+import ast
 
 
 class RoomApi(flask_restful.Resource):
@@ -10,9 +11,6 @@ class RoomApi(flask_restful.Resource):
 		if room:
 			return room.to_json_dict()
 		abort(404)
-
-	def post(self):
-		return "foo post"
 
 
 class JoinQueueApi(flask_restful.Resource):
@@ -31,6 +29,15 @@ class RoomsListApi(flask_restful.Resource):
 			'_id': str(room.id),
 			'slug': room.slug
 		} for room in Room.objects]
+
+	def post(self):
+
+		if request.data:
+			request_data = ast.literal_eval(request.data)
+			data = request_data.get('data')
+			if data.get('name') and current_user.is_authenticated():
+				new_room = Room(name=data['name'])
+				new_room.save()
 
 
 class QueueElementApi(flask_restful.Resource):
