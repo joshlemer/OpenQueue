@@ -37,7 +37,9 @@ class QueueElementApi(flask_restful.Resource):
 	def delete(self, queue_id, queue_element_id):
 		queue = Queue.objects(id=queue_id).first()
 		queue_element = QueueElement.objects(id=queue_element_id).first()
-		if current_user.is_authenticated() and current_user.id == queue_element.user.id and queue:
+		if current_user.is_authenticated() and queue_element and current_user.id == queue_element.user.id and queue:
 			queue.remove_queue_element(queue_element)
+			queue_element.delete()
+
 
 

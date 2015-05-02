@@ -20,18 +20,36 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	        template: '<strong></strong>'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', function($http, $routeParams, $scope){
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', function($http, $routeParams, $scope, $interval){
         console.log($routeParams);
         var value = this;
         value.title = [];
-        $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
-            value.title=data;
-            value.data = data;
-            $scope.the_room = data;
-        });
-        this.join = function(queueSlug) {
-            $http.post('/api/queues/' + queueSlug + '/join/');
+
+
+        $scope.loadRoom = function() {
+            $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
+                value.title=data;
+                value.data = data;
+                $scope.the_room = data;
+            });
         };
+        this.join = function(queueSlug) {
+            $http.post('/api/queues/' + queueSlug + '/join/')
+            .success( function(data) {
+                $scope.loadRoom();
+            });
+        };
+
+        var promise = $interval( $scope.loadRoom, 30000);
+
+        $scope.loadRoom();
+
+        $scope.$on('$destroy', function() {
+            if(angular.isDefined(promise)) {
+                $interval.cancel(promise);
+                promise = undefined;
+            }
+        });
 
     }])
     .controller('RoomListController', ['$http', function($http){
@@ -49,12 +67,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 
         $scope.delete = function() {
             $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id).success( function(){
-                console.log('success');
+                $scope.loadRoom();
             });
         };
 
-    }]);
-app.directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
+    }])
+    .directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
@@ -72,10 +90,3 @@ app.directive("customPopover", ["$popover", "$compile", function($popover, $comp
             }
         }
     }]);
-
-app.directive('queueElement', ['$http', '$scope', function($http, $scope) {
-
-    $scope.leave() = function() {
-
-    };
-}]);
