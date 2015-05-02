@@ -1,7 +1,6 @@
 var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
-
 	})
 	.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider
@@ -14,13 +13,10 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	        controller: 'RoomController',
 	        controllerAs: 'room',
 	        templateUrl: 'static/detail.html'
-	    })
-	    .when('/sup', {
-	        controller: 'RoomAPIController',
-	        template: '<strong></strong>'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', function($http, $routeParams, $scope, $interval){
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope',
+     function($http, $routeParams, $scope, $interval, $rootScope){
         console.log($routeParams);
         var value = this;
         value.title = [];
@@ -31,6 +27,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
                 value.title=data;
                 value.data = data;
                 $scope.the_room = data;
+                $rootScope.roomSlug = data.slug;
             });
         };
         this.join = function(queueSlug) {
@@ -59,7 +56,15 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             }).success(function() {
                 location.reload();
             });
-            console.log(newroom);
+        };
+    }])
+    .controller('NewQueueController', ['$scope', '$http', '$routeParams','$rootScope',
+     function($scope, $http, $routeParams, $rootScope) {
+        $scope.submit = function(newqueue) {
+            $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/', {
+                data: newqueue
+            }).success(function() {
+            });
         };
     }])
     .controller('RoomListController', ['$http', function($http){

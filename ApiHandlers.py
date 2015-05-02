@@ -39,6 +39,22 @@ class RoomsListApi(flask_restful.Resource):
 				new_room = Room(name=data['name'])
 				new_room.save()
 
+class QueueApi(flask_restful.Resource):
+	def post(self, slug):
+		print 'a'
+		if request.data:
+			request_data = ast.literal_eval(request.data)
+			data = request_data.get('data')
+			room = Room.objects(slug=slug).first()
+			print 'b'
+			if data.get('name') and current_user.is_authenticated() and room:
+				print 'c'
+				new_queue = Queue(name=data['name'], room=room)
+				new_queue.save()
+				room.queues.append(new_queue)
+				room.save()
+
+
 
 class QueueElementApi(flask_restful.Resource):
 	def delete(self, queue_id, queue_element_id):
