@@ -52,6 +52,11 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
         });
 
     }])
+    .controller('NewRoomController', ['$scope', '$http', function($scope, $http) {
+        $scope.submit = function(newroom) {
+            console.log(newroom);
+        };
+    }])
     .controller('RoomListController', ['$http', function($http){
         var value = this;
         $http.get('/api/rooms/').success(function(data){
