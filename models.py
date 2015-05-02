@@ -117,6 +117,7 @@ class Queue(db.Document):
 	def remove_queue_element(self, queue_element):
 		if queue_element in self.queue_elements:
 			self.queue_elements.remove(queue_element)
+			self.save()
 		else:
 			for resource in self.resources:
 				resource.remove_queue_element(queue_element)
