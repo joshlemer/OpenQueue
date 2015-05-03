@@ -30,14 +30,20 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
                 $rootScope.roomSlug = data.slug;
             });
         };
+
+        $rootScope.loadRoom = $scope.loadRoom;
+
         this.join = function(queueSlug) {
             $http.post('/api/queues/' + queueSlug + '/join/')
             .success( function(data) {
                 $scope.loadRoom();
             });
         };
+        this.openQueue = function(queue) {
+            $rootScope.openQueue = queue;
+        };
 
-        var promise = $interval( $scope.loadRoom, 30000);
+        //var promise = $interval( $scope.loadRoom, 30000);
 
         $scope.loadRoom();
 
@@ -77,6 +83,22 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 
         $scope.queue_element = $scope.resource.current_queue_element;
 
+    }])
+    .controller('EditQueueController', ['$http', '$scope','$rootScope', function($http, $scope, $rootScope){
+
+        $scope.submit = function(queue) {
+            $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/' + queue._id + '/',
+            {
+                data: queue
+            })
+            .success(function() {
+                $scope.loadRoom();
+            });
+        };
+
+        $scope.openQueue = function(queue) {
+            $rootScope.editingQueue = angular.copy(queue);
+        };
     }])
     .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
 

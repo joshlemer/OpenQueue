@@ -25,6 +25,7 @@ api.add_resource(JoinQueueApi, '/api/queues/<queue_slug>/join/')
 api.add_resource(RoomsListApi, '/api/rooms/')
 api.add_resource(QueueElementApi, '/api/queues/<queue_id>/queue_elements/<queue_element_id>')
 api.add_resource(QueueApi, '/api/rooms/<slug>/queues/')
+api.add_resource(EditQueueApi, '/api/rooms/<slug>/queues/<queue_id>/')
 
 if __name__ == '__main__':
 	app.run()

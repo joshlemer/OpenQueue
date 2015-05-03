@@ -1,12 +1,18 @@
 
+.occupied-current-user .member {
+    margin-top: 15px;
+}
+.queue-elements-container .member {
+    float: left;
+}
 .member {
     background-color: #D6DADC;
     border-radius: 3px;
     color: #4D4D4D;
     cursor: pointer;
     display: block;
-    float: left;
     height: 30px;
+    vertical-align: middle;
     margin: 0px 4px 4px 0px;
     overflow: hidden;
     position: relative;

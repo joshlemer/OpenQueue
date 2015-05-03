@@ -9,7 +9,10 @@
 <div ng-repeat="queue in room.data.queues" class="queue-container container">
     <div class="row">
         <h3 class="col-xs-6">Queue Name: [[ queue.name ]]</h3>
-        <div class="col-xs-3 col-xs-offset-3"><div class="btn btn-default" ng-click="room.join(queue.slug)">Join</div></div>
+        <div class="col-xs-3 col-xs-offset-3">
+            <div class="btn btn-default" ng-click="room.join(queue.slug)">Join</div>
+            <div ng-controller="EditQueueController" class="btn btn-default" ng-click="room.openQueue(queue);openQueue(queue);" data-toggle="modal" data-target="#editQueueModal">Edit</div>
+        </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -21,7 +24,7 @@
                         <div class="resource-info text-center" >
                             [[ resource.name ]]
                             <div ng-controller="QueueElementController as queueElement" ng-show="[[resource.current_queue_element]]" class="occupied-current-user">
-                                <div data-content-template="static/hello.tpl.html" data-animation="am-flip-x" data-auto-close="1" bs-popover popover-placement="right" type="button" class="member" data-container="body" title="popover title" data-placement="right" data-html="true">
+                                <div data-content-template="static/hello.tpl.html" data-animation="am-flip-x" data-auto-close="1" bs-popover popover-placement="right" type="button" class="member center-block" data-container="body" title="popover title" data-placement="right" data-html="true">
                                     <span class="member-initials" title="[[resource.current_queue_element.user.email]]">
                                         [[ resource.current_queue_element.user.email.substring(0, 2) ]]
                                     </span>
@@ -35,7 +38,7 @@
                 </div>
             </div>
             <div class="col-xs-8 queue-elements-container">
-                <div ng-repeat="queue_element in queue.queue_elements" ng-controller="QueueElementController as queueElement" class="occupied-current-user">
+                <div ng-repeat="queue_element in queue.queue_elements" ng-controller="QueueElementController as queueElement" class="">
                     <!--data-auto-close="1"-->
                     <div auto-close="1" data-content-template="static/hello.tpl.html" data-animation="am-flip-x" data-auto-close="1" bs-popover popover-placement="right" type="button" class="member" data-container="body" title="popover title" data-placement="right" data-html="true">
                         <span class="member-initials" title="[[resource.current_queue_element.user.email]]">
