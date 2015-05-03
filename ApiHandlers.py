@@ -1,7 +1,8 @@
 import flask_restful
-from flask import abort
+from flask import abort, request
 from models import *
 from flask.ext.login import current_user
+import ast
 
 
 class RoomApi(flask_restful.Resource):
@@ -10,9 +11,6 @@ class RoomApi(flask_restful.Resource):
 		if room:
 			return room.to_json_dict()
 		abort(404)
-
-	def post(self):
-		return "foo post"
 
 
 class JoinQueueApi(flask_restful.Resource):
@@ -32,12 +30,36 @@ class RoomsListApi(flask_restful.Resource):
 			'slug': room.slug
 		} for room in Room.objects]
 
+	def post(self):
+
+		if request.data:
+			request_data = ast.literal_eval(request.data)
+			data = request_data.get('data')
+			if data.get('name') and current_user.is_authenticated():
+				new_room = Room(name=data['name'])
+				new_room.save()
+
+class QueueApi(flask_restful.Resource):
+	def post(self, slug):
+		if request.data:
+			request_data = ast.literal_eval(request.data)
+			data = request_data.get('data')
+			room = Room.objects(slug=slug).first()
+			if data.get('name') and current_user.is_authenticated() and room:
+				new_queue = Queue(name=data['name'], room=room)
+				new_queue.save()
+				room.queues.append(new_queue)
+				room.save()
+
+
 
 class QueueElementApi(flask_restful.Resource):
 	def delete(self, queue_id, queue_element_id):
 		queue = Queue.objects(id=queue_id).first()
 		queue_element = QueueElement.objects(id=queue_element_id).first()
-		if current_user.is_authenticated() and current_user.id == queue_element.user.id and queue:
+		if current_user.is_authenticated() and queue_element and current_user.id == queue_element.user.id and queue:
 			queue.remove_queue_element(queue_element)
+			queue_element.delete()
+
 
 

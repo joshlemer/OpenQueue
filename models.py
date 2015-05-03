@@ -19,7 +19,10 @@ class User(db.Document):
 		data['_id'] = str(data['_id'])
 		data['timestamp'] = time.mktime(data['timestamp'].timetuple())
 
-		return data
+		return {
+			'_id': str(self.id),
+			'email': self.email,
+		}
 
 	def is_active(self):
 		return self.active
@@ -104,12 +107,14 @@ class Queue(db.Document):
 		data['_id'] = str(self.id)
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 		data['resources'] = [ r.to_json_dict() for r in self.resources ]
-		data['queue_elements'] = [ qe.to_json_dict() for qe in self.queue_elements ]
+		if 'room' in data: del data['room']
+		data['queue_elements'] = [ qe.to_json_dict(follow_refs=False) for qe in self.queue_elements ]
 
 		return data
 
 	def add_queue_element(self, queue_element):
 		self.queue_elements.append(queue_element)
+		self.save()
 		self.flush_queue()
 
 	def remove_queue_element(self, queue_element):
@@ -126,10 +131,10 @@ class Queue(db.Document):
 			for resource in queue_element.accepts:
 				if resource.current_queue_element is None:
 					resource.current_queue_element = queue_element
-					self.queue_elements.remove(queue_element)
-					resource.current_queue_element.save()
 					resource.save()
+					self.queue_elements.remove(queue_element)
 					self.save()
+					break
 
 
 class Room(db.Document):
@@ -142,7 +147,8 @@ class Room(db.Document):
 		return url_for('room', kwargs={"slug": self.slug})
 
 	def save(self, *args, **kwargs):
-		self.slug = UniqueSlugify(uids=[r.slug for r in Room.objects])(self.name)
+		if not self.slug:
+			self.slug = UniqueSlugify(uids=[r.slug for r in Room.objects])(self.name)
 		super(Room, self).save(*args, **kwargs)
 
 	def __unicode__(self):

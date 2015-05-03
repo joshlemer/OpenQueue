@@ -1,7 +1,6 @@
 var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
-
 	})
 	.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider
@@ -14,25 +13,59 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	        controller: 'RoomController',
 	        controllerAs: 'room',
 	        templateUrl: 'static/detail.html'
-	    })
-	    .when('/sup', {
-	        controller: 'RoomAPIController',
-	        template: '<strong></strong>'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', function($http, $routeParams, $scope){
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope',
+     function($http, $routeParams, $scope, $interval, $rootScope){
         console.log($routeParams);
         var value = this;
         value.title = [];
-        $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
-            value.title=data;
-            value.data = data;
-            $scope.the_room = data;
-        });
+
+
+        $scope.loadRoom = function() {
+            $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
+                value.title=data;
+                value.data = data;
+                $scope.the_room = data;
+                $rootScope.roomSlug = data.slug;
+            });
+        };
         this.join = function(queueSlug) {
-            $http.post('/api/queues/' + queueSlug + '/join/');
+            $http.post('/api/queues/' + queueSlug + '/join/')
+            .success( function(data) {
+                $scope.loadRoom();
+            });
         };
 
+        var promise = $interval( $scope.loadRoom, 30000);
+
+        $scope.loadRoom();
+
+        $scope.$on('$destroy', function() {
+            if(angular.isDefined(promise)) {
+                $interval.cancel(promise);
+                promise = undefined;
+            }
+        });
+
+    }])
+    .controller('NewRoomController', ['$scope', '$http', function($scope, $http) {
+        $scope.submit = function(newroom) {
+            $http.post('/api/rooms/', {
+                data: newroom
+            }).success(function() {
+                location.reload();
+            });
+        };
+    }])
+    .controller('NewQueueController', ['$scope', '$http', '$routeParams','$rootScope',
+     function($scope, $http, $routeParams, $rootScope) {
+        $scope.submit = function(newqueue) {
+            $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/', {
+                data: newqueue
+            }).success(function() {
+            });
+        };
     }])
     .controller('RoomListController', ['$http', function($http){
         var value = this;
@@ -49,12 +82,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 
         $scope.delete = function() {
             $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id).success( function(){
-                console.log('success');
+                $scope.loadRoom();
             });
         };
 
-    }]);
-app.directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
+    }])
+    .directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
@@ -72,10 +105,3 @@ app.directive("customPopover", ["$popover", "$compile", function($popover, $comp
             }
         }
     }]);
-
-app.directive('queueElement', ['$http', '$scope', function($http, $scope) {
-
-    $scope.leave() = function() {
-
-    };
-}]);
