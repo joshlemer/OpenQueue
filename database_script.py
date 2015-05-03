@@ -1,3 +1,4 @@
+
 from models import *
 
 #Users
@@ -72,7 +73,9 @@ rooms[1].queues.append(queues[3])
 rooms[2].queues.append(queues[4])
 rooms[2].queues.append(queues[5])
 
-rooms = [room.save() for room in rooms]
+for room in rooms:
+	room.save()
+
 rooms = [room.reload() for room in rooms]
 
 
