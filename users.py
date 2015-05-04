@@ -3,7 +3,7 @@ from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask.ext.bcrypt import Bcrypt
 from pymongo import read_preferences
-from qme_src import app, login_manager
+from __init__ import app, login_manager
 # Flask-Login use this to reload the user object from the user ID stored in the session
 @login_manager.user_loader
 def load_user(id):
