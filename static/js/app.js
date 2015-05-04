@@ -89,6 +89,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
         $scope.newResource = function() {
             $rootScope.editingQueue.resources.push({isNew: true});
         };
+        $scope.deleteResource = function(resource_id) {
+            $scope.editingQueue.deletedResources.push(resource_id);
+            $scope.editingQueue.resources = $scope.editingQueue.resources.filter(function(resource) {
+                return resource._id !== resource_id;
+            });
+        };
         $scope.submit = function(queue) {
             $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/' + queue._id + '/',
             {
@@ -97,6 +103,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             .success(function() {
                 $scope.loadRoom();
             });
+            console.log(queue);
         };
 
         $scope.delete = function(queue) {
@@ -108,6 +115,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 
         $scope.openQueue = function(queue) {
             $rootScope.editingQueue = angular.copy(queue);
+            $rootScope.editingQueue.deletedResources = [];
         };
     }])
     .controller('QueueElementController', ['$http', '$scope', function($http, $scope){

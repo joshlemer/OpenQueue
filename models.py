@@ -91,7 +91,7 @@ class Queue(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
-	resources = db.ListField(db.ReferenceField('Resource'))
+	resources = db.ListField(db.ReferenceField('Resource', reverse_delete_rule=db.PULL))
 	room = db.ReferenceField('Room')
 	queue_elements = db.ListField(db.ReferenceField('QueueElement', reverse_delete_rule=db.PULL))
 

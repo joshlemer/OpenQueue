@@ -3,6 +3,7 @@ from flask import abort, request
 from models import *
 from flask.ext.login import current_user
 import ast
+import json
 
 
 class RoomApi(flask_restful.Resource):
@@ -55,12 +56,40 @@ class QueueApi(flask_restful.Resource):
 class EditQueueApi(flask_restful.Resource):
 	def post(self, slug, queue_id):
 		if request.data:
-			data = ast.literal_eval(request.data).get('data')
+			data = json.loads(request.data).get('data')
 			room = Room.objects(slug=slug).first()
 			queue = Queue.objects(id=queue_id).first()
 			if room and queue and data.get('name') and current_user.is_authenticated():
-				queue.name = data.get('name')
+				queue_name = data.get('name')
+				resources = data.get('resources')
+				deleted_resource_ids = data.get('deletedResources')
+
+				if queue_name:
+					queue.name = queue_name
+
+				for resource in resources:
+					id = resource.get('_id')
+					resource_name = resource.get('name') if resource.get('name') else 'Untitled'
+					if id:
+						the_resource = Resource.objects(id=id).first()
+					if id and the_resource:
+						the_resource.name = resource_name
+						the_resource.save()
+					elif not id:
+						the_resource = Resource(name=resource_name)
+						the_resource.save()
+						queue.resources.append(the_resource)
+
 				queue.save()
+
+				if deleted_resource_ids:
+					for resource in queue.resources:
+						if str(resource.id) in deleted_resource_ids:
+							resource.delete()
+
+
+
+
 
 	def delete(self, slug, queue_id):
 		queue = Queue.objects(id=queue_id).first()
