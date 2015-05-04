@@ -86,6 +86,9 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
     }])
     .controller('EditQueueController', ['$http', '$scope','$rootScope', function($http, $scope, $rootScope){
 
+        $scope.newResource = function() {
+            $rootScope.editingQueue.resources.push({isNew: true});
+        };
         $scope.submit = function(queue) {
             $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/' + queue._id + '/',
             {

@@ -132,10 +132,11 @@
                             <!--<td>[[resource.name]]</td>-->
                             <td><input ng-model='resource.name'type="text" class="form-control" placeholder="Enter Resource Name" ></td>
                             <td><input type="checkbox"></td>
-                            <td><button type="button" class="pull-left btn btn-danger" ng-click="" >Delete</button></td>
+                            <td><button ng-show="!resource.isNew"type="button" class="pull-left btn btn-danger" ng-click="" >Delete</button></td>
+
                         </tr>
                         <tr>
-                            <td><button type="button" class="pull-left btn " ng-click="" >Add Resource</button></td>
+                            <td><button type="button" class="pull-left btn " ng-click="newResource()" >Add Resource</button></td>
                         </tr>
 
                     </tbody>
