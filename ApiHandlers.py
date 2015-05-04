@@ -10,7 +10,12 @@ class RoomApi(flask_restful.Resource):
 	def get(self, slug):
 		room = Room.objects(slug=slug).first()
 		if room:
-			return room.to_json_dict()
+			result = room.to_json_dict()
+			if room.owner and room.owner.id == current_user.id:
+				result['isOwner'] = True
+			else:
+				result['isOwner'] = False
+			return result
 		abort(404)
 
 
@@ -38,7 +43,7 @@ class RoomsListApi(flask_restful.Resource):
 			request_data = ast.literal_eval(request.data)
 			data = request_data.get('data')
 			if data.get('name') and current_user.is_authenticated():
-				new_room = Room(name=data['name'])
+				new_room = Room(name=data['name'], owner=User.objects(id=current_user.id).first())
 				new_room.save()
 
 class QueueApi(flask_restful.Resource):
@@ -47,7 +52,7 @@ class QueueApi(flask_restful.Resource):
 			request_data = ast.literal_eval(request.data)
 			data = request_data.get('data')
 			room = Room.objects(slug=slug).first()
-			if data.get('name') and current_user.is_authenticated() and room:
+			if data.get('name') and current_user.is_authenticated() and room and room.owner.id == current_user.id:
 				new_queue = Queue(name=data['name'], room=room)
 				new_queue.save()
 				room.queues.append(new_queue)
@@ -59,7 +64,7 @@ class EditQueueApi(flask_restful.Resource):
 			data = json.loads(request.data).get('data')
 			room = Room.objects(slug=slug).first()
 			queue = Queue.objects(id=queue_id).first()
-			if room and queue and data.get('name') and current_user.is_authenticated():
+			if room and queue and data.get('name') and current_user.is_authenticated() and room.owner.id==current_user.id:
 				queue_name = data.get('name')
 				resources = data.get('resources')
 				deleted_resource_ids = data.get('deletedResources')

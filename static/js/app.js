@@ -70,6 +70,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             $http.post('/api/rooms/' + $rootScope.roomSlug + '/queues/', {
                 data: newqueue
             }).success(function() {
+                $rootScope.loadRoom();
             });
         };
     }])

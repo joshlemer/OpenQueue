@@ -37,7 +37,7 @@
 .queue-container {
   background-color: #F8F5F0;
   border-radius: 3px;
-  padding: 1px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
   margin-bottom: 10px;
 }
 .resources-container {
@@ -52,6 +52,7 @@
   border-radius: 3px;
   background-color: #1B8DBB;
   padding-bottom: 10px;
+  margin-bottom:10px;
 }
 
 .queue-elements-container {

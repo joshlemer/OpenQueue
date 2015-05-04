@@ -142,6 +142,7 @@ class Room(db.Document):
 	name = db.StringField(max_length=255, required=True)
 	slug = db.StringField(max_length=255, required=True)
 	queues = db.ListField(db.ReferenceField('Queue', reverse_delete_rule=db.PULL))
+	owner = db.ReferenceField('User')
 
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})
@@ -159,6 +160,8 @@ class Room(db.Document):
 		data['_id'] = str(data['_id'])
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 		data['queues'] = [ q.to_json_dict() for q in self.queues ]
+		if self.owner :
+			data['owner'] =  self.owner.to_json_dict()
 
 		return data
 
