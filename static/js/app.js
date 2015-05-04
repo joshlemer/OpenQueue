@@ -96,6 +96,13 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             });
         };
 
+        $scope.delete = function(queue) {
+            $http.delete('/api/rooms/' + $rootScope.roomSlug + '/queues/' + queue._id + '/')
+            .success(function() {
+                $scope.loadRoom();
+            });
+        };
+
         $scope.openQueue = function(queue) {
             $rootScope.editingQueue = angular.copy(queue);
         };

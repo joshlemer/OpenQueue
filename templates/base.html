@@ -111,10 +111,43 @@
                     <label for="queueName">Queue Name</label>
                     <input ng-model='editingQueue.name'type="text" class="form-control" id="queueName" placeholder="Enter Queue Name" >
                 </div>
+                <hr>
+                <h4>Resources</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Resource
+                            </th>
+                            <th>
+                                Active
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="resource in editingQueue.resources">
+                            <!--<td>[[resource.name]]</td>-->
+                            <td><input ng-model='resource.name'type="text" class="form-control" placeholder="Enter Resource Name" ></td>
+                            <td><input type="checkbox"></td>
+                            <td><button type="button" class="pull-left btn btn-danger" ng-click="" >Delete</button></td>
+                        </tr>
+                        <tr>
+                            <td><button type="button" class="pull-left btn " ng-click="" >Add Resource</button></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
             </div>
             <div class="modal-footer">
+                <button type="button" class="pull-left btn btn-danger" ng-click="delete(editingQueue)"data-dismiss="modal">Delete Queue</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="submit(editingQueue)" data-dismiss="modal">Create</button>
+                <button type="button" class="btn btn-primary" ng-click="submit(editingQueue)" data-dismiss="modal">Save</button>
             </div>
         </div>
     </div>

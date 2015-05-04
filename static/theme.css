@@ -38,11 +38,13 @@
   background-color: #F8F5F0;
   border-radius: 3px;
   padding: 1px 10px 10px 10px;
+  margin-bottom: 10px;
 }
 .resources-container {
   background-color: #93C54B;
   padding: 10px 10px 10px 10px;
   border-radius: 3px;
+  min-height: 120px !important;
 }
 
 .resources-container .resource-info-container .resource-info {
@@ -56,6 +58,8 @@
   //background-color: #3E3F3A;
   background-color: white;
   border-radius: 3px;
+  min-height: 54px !important;
+  padding: 10px;
 }
 
 .navbar-email {
