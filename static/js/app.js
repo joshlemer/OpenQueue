@@ -28,6 +28,9 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
                 value.data = data;
                 $scope.the_room = data;
                 $rootScope.roomSlug = data.slug;
+            })
+            .error(function(data){
+                $route
             });
         };
 
@@ -43,7 +46,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             $rootScope.openQueue = queue;
         };
 
-        //var promise = $interval( $scope.loadRoom, 30000);
+        var promise = $interval( $scope.loadRoom, 30000);
 
         $scope.loadRoom();
 
@@ -84,6 +87,31 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 
         $scope.queue_element = $scope.resource.current_queue_element;
 
+    }])
+    .controller('EditRoomController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope){
+        $scope.newMember = function() {
+            $rootScope.editingRoom.newMembers.push({})
+        };
+        $scope.deleteMember = function(member_id) {
+            $scope.editingRoom.deletedMembers.push(member_id);
+            $scope.editingRoom.members = $scope.editingRoom.members.filter(function(member) {
+                return member._id !== member_id;
+            });
+        };
+        $scope.openRoom = function() {
+            $rootScope.editingRoom = angular.copy($scope.the_room);
+            $rootScope.editingRoom.deletedMembers = [];
+            $rootScope.editingRoom.newMembers = [];
+        };
+
+        $scope.submit = function(room) {
+            $http.post('/api/rooms/' + room.slug + '/',{
+                data: room
+            })
+            .success(function(){
+                $rootScope.loadRoom();
+            });
+        };
     }])
     .controller('EditQueueController', ['$http', '$scope','$rootScope', function($http, $scope, $rootScope){
 

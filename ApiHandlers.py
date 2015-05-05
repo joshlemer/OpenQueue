@@ -8,8 +8,15 @@ import json
 
 class RoomApi(flask_restful.Resource):
 	def get(self, slug):
+
 		room = Room.objects(slug=slug).first()
-		if room:
+
+		if current_user.is_authenticated():
+			user = User.objects(id=current_user.id).first()
+		else:
+			user = None
+
+		if room and (user==room.owner or  user in room.members):
 			result = room.to_json_dict()
 			if room.owner and room.owner.id == current_user.id:
 				result['isOwner'] = True
@@ -17,6 +24,33 @@ class RoomApi(flask_restful.Resource):
 				result['isOwner'] = False
 			return result
 		abort(404)
+
+	def post(self, slug):
+		if request.data:
+			data = json.loads(request.data).get('data')
+			room = Room.objects(slug=slug).first()
+			if room and current_user.is_authenticated() and room.owner.id==current_user.id:
+				room_name = data.get('name')
+				new_members = data.get('newMembers')
+				deleted_member_ids = data.get('deletedMembers')
+
+				if room_name:
+					room.name = room_name
+					room.save()
+
+				if new_members:
+					for new_member in new_members:
+						user = User.objects(email=new_member.get('email')).first()
+						if user:
+							room.update(add_to_set__members=user)
+					room.save()
+
+				if deleted_member_ids:
+					for deleted_member_id in deleted_member_ids:
+						user = User.objects(id=deleted_member_id).first()
+						if user:
+							room.update(pull__members=user)
+					room.save()
 
 
 class JoinQueueApi(flask_restful.Resource):

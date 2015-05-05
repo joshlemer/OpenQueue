@@ -152,5 +152,61 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="editRoomModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" ng-controller="EditRoomController">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Room</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="queueName">Room Name</label>
+                    <input ng-model='editingRoom.name'type="text" class="form-control" id="roomName" placeholder="Enter Room Name" >
+                </div>
+                <hr>
+                <h4>Members</h4>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            Member Email
+                        </th>
+                        <!--<th>-->
+                        <!--Active-->
+                        <!--</th>-->
+                        <th>
+
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="member in editingRoom.members">
+                        <td>[[member.email]]</td>
+                        <!--<td><input type="checkbox"></td>-->
+                        <td><button ng-show="!member.isNew"type="button" class="pull-left btn btn-danger" ng-click="deleteMember(member._id)" >Remove</button></td>
+
+                    </tr>
+                    <tr ng-repeat="member in editingRoom.newMembers">
+                        <td><input ng-model='member.email'type="text" class="form-control" placeholder="Enter Member Email" ></td>
+                    </tr>
+                    <tr>
+                        <td><button type="button" class="pull-left btn " ng-click="newMember()" >Add Member</button></td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="pull-left btn btn-danger" ng-click="delete(editingRoom)"data-dismiss="modal">Delete Room</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="submit(editingRoom)" data-dismiss="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

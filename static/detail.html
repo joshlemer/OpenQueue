@@ -1,8 +1,9 @@
-<div class="page-header row">
-    <h1 class="col-xs-11">
+<div class="page-header row" ng-show="the_room">
+    <h1 class="col-xs-10">
         [[the_room.name]]
-        <small>[['owned by ' + the_room.owner.email]]</small>
+        <small ng-show="the_room.owner.email">[['owned by ' + the_room.owner.email]]</small>
     </h1>
+    <div class="col-xs-1 pull-right" ng-show="the_room.isOwner"><div class="btn btn-default" data-toggle="modal" data-target="#editRoomModal" class="navbar-text" ng-controller="EditRoomController"ng-click="openRoom()">Edit Room</div></div>
     <div class="col-xs-1 pull-right" ng-show="the_room.isOwner"><div class="btn btn-default" data-toggle="modal" data-target="#createQueueModal" class="navbar-text">Add Queue</div></div>
 </div>
 <!--<p>[[ room.data.created_at | date ]]</p>-->
