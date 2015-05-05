@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
+var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])//ui.bootstrap' ])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
 	})
@@ -170,7 +170,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             link: function(scope, element, attrs) {
                 var myPopover = $popover(element, {
                     title: 'My Title',
-                    contentTemplate: '/static/hello.tpl.html',
+                    contentTemplate: 'example.html',
                     html: true,
                     trigger: 'manual',
                     autoClose: true,

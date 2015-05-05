@@ -25,7 +25,7 @@
                         <div class="resource-info text-center" >
                             [[ resource.name.substring(0,10) ]]
                             <div ng-controller="QueueElementController as queueElement" ng-show="[[resource.current_queue_element]]" class="occupied-current-user">
-                                <div data-content-template="static/hello.tpl.html" data-animation="am-flip-x" data-auto-close="1" bs-popover popover-placement="right" type="button" class="member center-block" data-container="body" title="popover title" data-placement="right" data-html="true">
+                                <div custom-popover ng-click="showPopover()"  data-animation="am-flip-x" data-auto-close="1" popover-placement="right" type="button" class="member center-block" data-container="body" title="popover title" data-placement="right" data-html="true">
                                     <span class="member-initials" title="[[resource.current_queue_element.user.email]]">
                                         [[ resource.current_queue_element.user.email.substring(0, 2) ]]
                                     </span>
@@ -55,5 +55,15 @@
     <p ng-repeat="resource in room.data.resources">[[ resource.name ]]</p>
 </div>
 
+<script type="text/ng-template" id="example.html">
+    <div ng-controller="QueueElementController">
+
+        <div ng-repeat="resource in queue.resources">
+            <input type="checkbox">[[resource.name]]
+        </div>
+        <div ng-click="delete()">Finish</div>
+
+    </div>
+</script>
 
 
