@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])
+var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngCookies'])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
 	})
@@ -15,12 +15,10 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])
 	        templateUrl: 'static/detail.html'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope',
-     function($http, $routeParams, $scope, $interval, $rootScope){
-        console.log($routeParams);
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore',
+     function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore){
         var value = this;
         value.title = [];
-
 
         $scope.loadRoom = function() {
             $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
@@ -47,7 +45,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])
             $rootScope.openQueue = queue;
         };
 
-        var promise = $interval( $scope.loadRoom, 30000);
+        //var promise = $interval( $scope.loadRoom, 30000);
 
         $scope.loadRoom();
 
@@ -164,20 +162,23 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])
         };
 
     }])
-    .directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
+    .directive("customPopover", ["$popover", "$compile", "$cookies", function($popover, $compile, $cookies) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
+                console.log(scope.queue_element);
                 var myPopover = $popover(element, {
-                    title: 'My Title',
+                    title: 'my title',
                     contentTemplate: 'example.html',
                     html: true,
                     trigger: 'manual',
+                    placement: 'right',
                     autoClose: true,
                     scope: scope
                 });
-                scope.showPopover = function() {
-                    myPopover.show();
+                scope.togglePopover = function() {
+                    scope.userId = $cookies.userId;
+                    myPopover.toggle();
                 }
             }
         }

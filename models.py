@@ -56,11 +56,6 @@ class QueueElement(db.Document):
 		data['user'] = self.user.to_json_dict()
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
 
-		if current_user.is_authenticated() and current_user.id==self.user.id:
-			data['isOwner'] = True
-		else:
-			data['isOwner'] = False
-
 		if follow_refs:
 			data['accepts'] = [ r.to_json_dict() for r in self.accepts ]
 		else:

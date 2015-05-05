@@ -1,3 +1,7 @@
+.popover.right {
+  min-width: 150px;
+  margin-left: 40px !important;
+}
 
 .occupied-current-user .member {
     margin-top: 15px;
