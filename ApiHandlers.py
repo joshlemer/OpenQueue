@@ -25,6 +25,11 @@ class RoomApi(flask_restful.Resource):
 			return result
 		abort(404)
 
+	def delete(self, slug):
+		room = Room.objects(slug=slug).first()
+		if room and current_user.is_authenticated() and room.owner.id==current_user.id:
+			room.delete()
+
 	def post(self, slug):
 		if request.data:
 			data = json.loads(request.data).get('data')

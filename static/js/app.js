@@ -88,7 +88,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
         $scope.queue_element = $scope.resource.current_queue_element;
 
     }])
-    .controller('EditRoomController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope){
+    .controller('EditRoomController', ['$http', '$scope', '$rootScope', '$location', function($http, $scope, $rootScope, $location){
         $scope.newMember = function() {
             $rootScope.editingRoom.newMembers.push({})
         };
@@ -102,6 +102,13 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             $rootScope.editingRoom = angular.copy($scope.the_room);
             $rootScope.editingRoom.deletedMembers = [];
             $rootScope.editingRoom.newMembers = [];
+        };
+
+        $scope.delete = function(room) {
+            $http.delete('/api/rooms/' + room.slug + '/')
+            .success( function(data) {
+                $location.path('/');
+            });
         };
 
         $scope.submit = function(room) {
