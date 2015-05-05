@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])//ui.bootstrap' ])
+var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize'])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
 	})

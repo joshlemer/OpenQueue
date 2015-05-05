@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, render_template, redirect, session, url_for, request, get_flashed_messages
+from flask import Flask, flash, render_template, redirect, session, url_for, request, get_flashed_messages, make_response
 from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask.ext.bcrypt import Bcrypt
@@ -12,7 +12,7 @@ api = Api(app)
 
 MONGO_URL = os.environ.get('MONGO_URL')
 if not MONGO_URL:
-    MONGO_URL = 'mongodb://localhost:27017/qme';
+	MONGO_URL = 'mongodb://localhost:27017/qme'
 
 app.config['MONGO_URI'] = MONGO_URL
 app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
@@ -36,9 +36,9 @@ if __name__ == '__main__':
 	app.run()
 
 def register_blueprints(app):
-    # Prevents circular imports
-    from views import rooms
-    app.register_blueprint(rooms)
+	# Prevents circular imports
+	from views import rooms
+	app.register_blueprint(rooms)
 
 
 register_blueprints(app)
@@ -51,80 +51,10 @@ def load_user(user_id):
 	from models import User
 	return User.objects(id=user_id).first()
 
-@app.route('/hello/')
-@app.route('/hello/<name>/')
-def josh(name=None):
-	from models import Room
-	roomString = ""
-	rooms = Room.objects
-
-	for room in rooms:
-		roomString += str(room)
-	return roomString
-	# return "Hello %s" % name
-
-
-class UserNotFoundError(Exception):
-    pass
-
-
-# Simple user class base on UserMixin
-# http://flask-login.readthedocs.org/en/latest/_modules/flask/ext/login.html#UserMixin
-class User(UserMixin):
-    '''Simple User class'''
-    USERS = {
-        # username: password
-        'john': 'love mary',
-        'mary': 'love peter'
-    }
-
-    def __init__(self, id):
-        if not id in self.USERS:
-            raise UserNotFoundError()
-        self.id = id
-        self.password = self.USERS[id]
-
-    @classmethod
-    def get(self_class, id):
-        '''Return user instance of id, return None if not exist'''
-        try:
-            return self_class(id)
-        except UserNotFoundError:
-            return None
-
-
-@login_manager.user_loader
-def load_user(id):
-	from models import User
-	return User.objects(id=id).first()
-
-@app.route('/')
-def index():
-    return (
-        '''
-            <h1>Hello {1}</h1>
-            <p style="color: #f00;">{0}</p>
-            <p>{2}</p>
-        '''.format(
-            # flash message
-            ', '.join([ str(m) for m in get_flashed_messages() ]),
-            current_user.get_id() or 'Guest',
-            ('<a href="/logout">Logout</a>' if current_user.is_authenticated()
-                else '<a href="/login">Login</a>')
-        )
-    )
-
 
 @app.route('/login')
 def login():
 	return render_template('login.html', request=request)
-    # return '''
-    #     <form action="/login/check" method="post">
-    #         <p>Username: <input name="username" type="text"></p>
-    #         <p>Password: <input name="password" type="password"></p>
-    #         <input type="submit">
-    #     </form>
-    # '''
 
 
 @app.route('/login/check', methods=['post'])
@@ -135,21 +65,22 @@ def login_check():
 	user = User.objects(email=request.form['email']).first()
 	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] )
 	if (user and pw_check):
-	    login_user(user, remember=True)
-	    print "success"
+		login_user(user, remember=True)
 	else:
-	    flash('Username or password incorrect')
-	    print "fail"
-	    return redirect(url_for('login'))
+		flash('Username or password incorrect')
+		return redirect(url_for('login'))
 
-	return redirect(url_for('index'))
+	resp = make_response(redirect('/'))
+	resp.set_cookie('userId', str(current_user.id))
 
-
+	return resp
 
 @app.route('/logout')
 def logout():
-    logout_user()
-    return redirect(url_for('index'))
+	logout_user()
+	resp = make_response(redirect('/'))
+	resp.set_cookie('userId', '')
+	return resp
 
 @app.route('/signup', methods=['GET'])
 def getSignup():
@@ -168,5 +99,5 @@ def postSignup():
 		new_user.save()
 		login_user(new_user, remember=True)
 
-	return redirect(url_for('index'))
+	return redirect('/')
 
