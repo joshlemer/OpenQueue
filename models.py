@@ -144,6 +144,7 @@ class Room(db.Document):
 	queues = db.ListField(db.ReferenceField('Queue', reverse_delete_rule=db.PULL))
 	owner = db.ReferenceField('User')
 	members = db.ListField(db.ReferenceField('User', reverse_delete_rule=db.PULL))
+	is_public = db.BooleanField(default=True)
 
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})

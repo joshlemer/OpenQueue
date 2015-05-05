@@ -30,7 +30,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
                 $rootScope.roomSlug = data.slug;
             })
             .error(function(data){
-                $route
+                //Should go to 404
+                //$location.path('/404'); possibly
             });
         };
 
