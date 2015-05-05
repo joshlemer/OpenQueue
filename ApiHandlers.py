@@ -154,4 +154,15 @@ class QueueElementApi(flask_restful.Resource):
 			queue.remove_queue_element(queue_element)
 			queue_element.delete()
 
+	def post(self, queue_id, queue_element_id):
+		if request.data:
+			data = json.loads(request.data).get('data')
+			queue = Queue.objects(id=queue_id).first()
+			queue_element = QueueElement.objects(id=queue_element_id).first()
+			if request.data and current_user.is_authenticated() and queue_element and current_user.id == queue_element.user.id and queue:
+				description = data.get('description')
+				if description:
+					queue_element.description = description
+					queue_element.save()
+
 

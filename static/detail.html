@@ -61,7 +61,13 @@
          <!--<div ng-repeat="resource in queue.resources"> -->
             <!--<input type="checkbox">[[resource.name]]-->
         <!--</div>-->
-        <button class="btn btn-danger btn-xs" ng-show="queue_element.user._id==userId" ng-click="delete()">Finish</button>
+
+        <textarea ng-show="queue_element.user._id==userId" rows="3" class="form-control" ng-model="queue_element.description"></textarea>
+
+        <span ng-show="queue_element.user._id!=userId">[[queue_element.description]]</span>
+
+        <button class="btn btn-danger btn-xs" ng-show="queue_element.user._id==userId" ng-click="delete()" title="Finish using this resource">Finish</button>
+        <button class="btn btn-primary btn-xs" ng-show="queue_element.user._id==userId" ng-click="save()">Save</button>
 
     </div>
 </script>

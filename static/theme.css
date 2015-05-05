@@ -53,6 +53,7 @@
 
 .resources-container .resource-info-container .resource-info {
   min-height: 100px;
+  min-width: 60px;
   border-radius: 3px;
   background-color: #1B8DBB;
   padding-bottom: 10px;

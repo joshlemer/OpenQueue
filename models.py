@@ -5,8 +5,8 @@ from slugify import UniqueSlugify
 from flask.ext.login import current_user
 
 class User(db.Document):
-	user_id = db.LongField(min_value=0)
 	email = db.EmailField(unique=True)
+	name = db.StringField(max_length = 255, default='')
 	password = db.StringField(default=True)
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
@@ -22,6 +22,7 @@ class User(db.Document):
 
 		return {
 			'_id': str(self.id),
+
 			'email': self.email,
 		}
 
@@ -40,6 +41,7 @@ class QueueElement(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	user = db.ReferenceField('User')
 	accepts = db.ListField(db.ReferenceField('Resource'))
+	description = db.StringField('')
 
 	def __unicode__(self):
 		result = ''

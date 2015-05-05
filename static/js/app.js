@@ -156,7 +156,17 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
     .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
 
         $scope.delete = function() {
-            $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id).success( function(){
+            $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id + '/').success( function(){
+                $scope.loadRoom();
+            });
+        };
+
+        $scope.save = function() {
+            $http.post('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id + '/',
+                {
+                    data: $scope.queue_element
+                }
+            ).success(function(data){
                 $scope.loadRoom();
             });
         };
@@ -166,9 +176,13 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
-                console.log(scope.queue_element);
+                var title = '';
+                if (scope.queue_element){
+                    title = scope.queue_element.user.email;
+                }
+
                 var myPopover = $popover(element, {
-                    title: 'my title',
+                    title: title,
                     contentTemplate: 'example.html',
                     html: true,
                     trigger: 'manual',
