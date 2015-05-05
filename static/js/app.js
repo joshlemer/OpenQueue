@@ -35,8 +35,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 
         $rootScope.loadRoom = $scope.loadRoom;
 
-        this.join = function(queueSlug) {
-            $http.post('/api/queues/' + queueSlug + '/join/')
+        this.join = function(queue_id) {
+            $http.post('/api/queues/' + queue_id + '/join/')
             .success( function(data) {
                 $scope.loadRoom();
             });
@@ -45,7 +45,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             $rootScope.openQueue = queue;
         };
 
-        //var promise = $interval( $scope.loadRoom, 30000);
+        var promise = $interval( $scope.loadRoom, 30000);
 
         $scope.loadRoom();
 
@@ -153,8 +153,35 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             $rootScope.editingQueue.deletedResources = [];
         };
     }])
-    .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
+    .controller('QueueElementController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope){
 
+        $scope.openNewQueueElement = function() {
+            var resources = [];
+            for (var i = 0; i < $scope.queue.resources.length; i++){
+                resources.push($scope.queue.resources[i]._id);
+            }
+            $rootScope.newQueueElement = {
+                accepts: resources
+            };
+            $rootScope.openQueue = $scope.queue;
+            console.log($rootScope.newQueueElement.accepts);
+        };
+        $scope.toggleSelection = function(resource_id) {
+             var i = $rootScope.newQueueElement.accepts.indexOf(resource_id);
+
+            if ( i >  -1 ){
+                $rootScope.newQueueElement.accepts.splice(i, 1);
+            } else {
+                $rootScope.newQueueElement.accepts.push(resource_id);
+            }
+        }
+        $scope.submitNewQueueElement = function(newQueueElement) {
+            $http.post('/api/queues/' + $rootScope.openQueue._id + '/join/', {
+                data: newQueueElement
+            }).success(function(data) {
+                $scope.loadRoom();
+            });
+        };
         $scope.delete = function() {
             $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id + '/').success( function(){
                 $scope.loadRoom();

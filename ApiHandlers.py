@@ -64,10 +64,18 @@ class RoomApi(flask_restful.Resource):
 
 
 class JoinQueueApi(flask_restful.Resource):
-	def post(self, queue_slug):
-		queue = Queue.objects(slug=queue_slug).first()
+	def post(self, queue_id):
+		queue = Queue.objects(id=queue_id).first()
+		accepts = queue.resources #all by default, for quick join
+		if request.data:
+			data = json.loads(request.data).get('data')
+			if data.get('accepts'):
+				print 'here'
+				accepts = Resource.objects(id__in=data.get('accepts'))
+				accepts = [a for a in accepts if a in queue.resources]
+
 		if current_user.is_authenticated() and queue:
-			queue_element = QueueElement(user=User.objects(email=current_user.email).first(), accepts=queue.resources)
+			queue_element = QueueElement(user=User.objects(id=current_user.id).first(), accepts=accepts)
 			queue_element.save()
 			queue.add_queue_element(queue_element)
 			queue.save()

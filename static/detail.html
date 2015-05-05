@@ -12,7 +12,8 @@
     <div class="row">
         <h3 class="col-xs-6">[[ queue.name ]]</h3>
         <div class="col-xs-3 col-xs-offset-3">
-            <div class="btn btn-default" ng-click="room.join(queue.slug)">Join</div>
+            <div class="btn btn-default" ng-click="room.join(queue._id)">Join</div>
+            <div ng-controller="QueueElementController as queueElementController" class="btn btn-default" ng-click="openNewQueueElement()" data-toggle="modal" data-target="#advancedJoinQueueModal">Advanced Join</div>
             <div ng-controller="EditQueueController" class="btn btn-default" ng-show="the_room.isOwner" ng-click="room.openQueue(queue);openQueue(queue);" data-toggle="modal" data-target="#editQueueModal">Edit</div>
         </div>
     </div>
