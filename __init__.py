@@ -89,17 +89,37 @@ def getSignup():
 @app.route('/signup', methods=['POST'])
 def postSignup():
 	from models import User
+	first_name, last_name = request.form['first_name'], request.form['last_name']
 	email, password, confirm_password = request.form['email'], request.form['password'], request.form['confirm_password']
+	validated = True
+
+	if (not first_name) or len(first_name) > 35:
+		flash('First names must be between 1 and 35 characters.')
+		validated = False
+	if (not last_name) or len(last_name) > 35:
+		flash('Last names must be between 1 and 35 characters.')
+		validated = False
+	if (not email) or len(email) > 50 or len(email) < 5:
+		flash('Email Addresses must be between 5 and 50 characters')
+		validated = False
+	if email and User.objects(email=email).count() > 0:
+		flash('A user with that email already exists')
+		validated = False
 
 	pw_hash = bcrypt.generate_password_hash(password)
 	pw_check = bcrypt.check_password_hash(pw_hash, confirm_password)
 
-	if (User.objects(email=email).count() == 0) and (pw_check):
-		new_user = User(email=email, password = pw_hash)
+	if not pw_check:
+		flash("Your passwords didn't check out")
+		validated = False
+
+	if validated:
+		new_user = User(first_name=first_name, last_name=last_name, email=email, password = pw_hash)
 		new_user.save()
 		login_user(new_user, remember=True)
+		return redirect('/')
 
-	return redirect('/')
+	return redirect('/signup')
 
 @app.route('/404', methods=['GET'])
 def get404():
