@@ -20,17 +20,27 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         var value = this;
         value.title = [];
 
+        /**
+        Really hacky, there's an issue where, when we update the data
+        on the page with the loadRoom() function, all popovers close.
+        This is terrible UX, so for now, don't auto-refresh unless no
+        popovers are open.
+        **/
+        $rootScope.openPopovers = 0;
+
         $scope.loadRoom = function() {
-            $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
-                value.title=data;
-                value.data = data;
-                $scope.the_room = data;
-                $rootScope.roomSlug = data.slug;
-            })
-            .error(function(data){
-                //Should go to 404
-                //$location.path('/404'); possibly
-            });
+            if ($rootScope.openPopovers===0){
+                $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
+                    value.title=data;
+                    value.data = data;
+                    $scope.the_room = data;
+                    $rootScope.roomSlug = data.slug;
+                })
+                .error(function(data){
+                    //Should go to 404
+                    //$location.path('/404'); possibly
+                });
+            }
         };
 
         $rootScope.loadRoom = $scope.loadRoom;
@@ -198,12 +208,26 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             });
         };
 
+        //This ensures that data isn't fetched while popovers are open
+        // ..which causes popovers to close
+        this.popoverOpen = false;
+        this.togglePopover = function() {
+            if (this.popoverOpen){
+                $rootScope.openPopovers--;
+            } else {
+                $rootScope.openPopovers++;
+            }
+            this.popoverOpen = !this.popoverOpen;
+        }
+
     }])
-    .directive("customPopover", ["$popover", "$compile", "$cookies", function($popover, $compile, $cookies) {
+    .directive("customPopover", ["$popover", "$compile", "$cookies",
+    function($popover, $compile, $cookies) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
                 var title = '';
+                scope.isOpen = false;
                 if (scope.queue_element){
                     title = scope.queue_element.user.email;
                 }
@@ -214,9 +238,10 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                     html: true,
                     trigger: 'manual',
                     placement: 'right',
-                    autoClose: true,
+                    autoClose: false,
                     scope: scope
                 });
+
                 scope.togglePopover = function() {
                     scope.userId = $cookies.userId;
                     myPopover.toggle();
