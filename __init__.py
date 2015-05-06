@@ -17,7 +17,7 @@ if not MONGO_URL:
 MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
 
 app.config['MONGO_URI'] = MONGO_URL
-app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
+app.config["MONGODB_SETTINGS"] = {'db': 'queueme'}
 app.config['SECRET_KEY'] = 'password'
 app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
 
