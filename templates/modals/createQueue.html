@@ -1,0 +1,26 @@
+{% extends "modals/baseModal.html" %}
+
+{% block modalId %}
+id="createQueueModal"
+{% endblock %}
+
+{% block modalController %}
+    ng-controller="NewQueueController as newQueue"
+{% endblock %}
+
+{% block modalHeader %}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">New Queue</h4>
+{% endblock %}
+
+{% block modalBody %}
+    <div class="form-group">
+        <label for="queueName">Queue Name</label>
+        <input ng-model='newqueue.name'type="text" class="form-control" id="queueName" placeholder="Enter Queue Name">
+    </div>
+{% endblock %}
+
+{% block modalFooter %}
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" ng-click="submit(newqueue)" data-dismiss="modal">Create</button>
+{% endblock %}

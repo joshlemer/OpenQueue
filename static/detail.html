@@ -61,6 +61,7 @@
         <textarea ng-show="queue_element.user._id==userId" rows="3" class="form-control" ng-model="queue_element.description"></textarea>
 
         <span ng-show="queue_element.user._id!=userId">[[queue_element.description]]</span>
+        <br>
 
         <strong>Accepts:</strong><br>
         <span ng-repeat="resource in queue_element.accepts">[[resource.name]]<br></span>
