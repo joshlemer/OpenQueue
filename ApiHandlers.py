@@ -18,7 +18,7 @@ class RoomApi(flask_restful.Resource):
 
 		if room and (room.is_public or user==room.owner or  user in room.members):
 			result = room.to_json_dict()
-			if room.owner and room.owner.id == current_user.id:
+			if current_user.is_authenticated() and room.owner and room.owner.id == current_user.id:
 				result['isOwner'] = True
 			else:
 				result['isOwner'] = False
