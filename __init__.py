@@ -17,7 +17,7 @@ if not MONGO_URL:
 MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
 
 app.config['MONGO_URI'] = MONGO_URL
-app.config["MONGODB_SETTINGS"] = {'db': 'queueme'}
+#app.config["MONGODB_SETTINGS"] = {'db': 'queueme'}
 app.config['SECRET_KEY'] = 'password'
 app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
 
@@ -67,7 +67,7 @@ def login_check():
 	#user = User.get(request.form['username'])
 	from models import User
 	user = User.objects(email=request.form['email']).first()
-	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] )
+	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] ) if user else None
 	if (user and pw_check):
 		login_user(user, remember=True)
 	else:
