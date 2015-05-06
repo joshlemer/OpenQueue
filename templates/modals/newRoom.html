@@ -1,0 +1,24 @@
+{% extends "modals/baseModal.html" %}
+
+{% block modalId %}id="myModal"{% endblock %}
+
+{% block modalController %}
+    ng-controller="NewRoomController as newRoom"
+{% endblock %}
+
+{% block modalHeader %}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">New Room</h4>
+{% endblock %}
+
+{% block modalBody %}
+    <div class="form-group">
+        <label for="roomName">Room Name</label>
+        <input ng-model='newroom.name'type="text" class="form-control" id="roomName" placeholder="Enter Room Name">
+    </div>
+{% endblock %}
+
+{% block modalFooter %}
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" ng-click="submit(newroom)">Create</button>
+{% endblock %}
