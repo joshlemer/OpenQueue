@@ -1,5 +1,6 @@
 .popover.right {
-  min-width: 150px;
+  max-width: unset;
+  min-width: 200px;
   margin-left: 40px !important;
 }
 
