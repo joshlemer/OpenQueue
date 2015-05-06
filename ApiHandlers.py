@@ -5,6 +5,32 @@ from flask.ext.login import current_user
 import ast
 import json
 
+class HomeApi(flask_restful.Resource):
+	def get(self):
+		if current_user.is_authenticated():
+			user = User.objects(id=current_user.id).first()
+
+			if user:
+				user_owned_rooms = Room.objects(owner__in=[user])
+				user_member_rooms = Room.objects(members__in=[user])
+
+				return {
+					'owned_rooms': [
+						{
+						'name': r.name,
+						'slug': r.slug
+						}
+						for r in user_owned_rooms],
+					'memberships': [
+						{
+						'name': r.name,
+						'slug': r.slug
+						}
+						for r in user_member_rooms]
+				}
+
+		return {}
+
 
 class RoomApi(flask_restful.Resource):
 	def get(self, slug):

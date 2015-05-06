@@ -1,3 +1,8 @@
-<div ng-repeat="room in list.data">
+<h1>My Rooms</h1>
+<div ng-repeat="room in ownedRooms">
+    <h2><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h2>
+</div>
+<h1>My Memberships</h1>
+<div ng-repeat="room in memberships">
     <h2><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h2>
 </div>

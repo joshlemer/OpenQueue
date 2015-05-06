@@ -5,7 +5,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider
 	    .when('/', {
-	        controller: 'RoomListController',
+	        controller: 'HomeController',
 	        controllerAs: 'list',
 	        templateUrl: 'static/list.html'
 	    })
@@ -20,6 +20,17 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	    .otherwise({
 	        templateUrl: 'static/404.html'
 	    });
+	}])
+	.controller('HomeController', ['$http', '$scope', '$rootScope', '$cookies',
+	function($http, $scope, $rootScope, $cookies) {
+	    $scope.loadHome = function() {
+	        $http.get('/api/home/').success(function(data){
+	            $scope.ownedRooms = data.owned_rooms;
+	            $scope.memberships = data.memberships;
+	        });
+	    }
+	    $scope.loadHome();
+
 	}])
     .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore', '$location',
      function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore, $location){
