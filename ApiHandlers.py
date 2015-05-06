@@ -18,7 +18,7 @@ class RoomApi(flask_restful.Resource):
 
 		if room and (room.is_public or user==room.owner or  user in room.members):
 			result = room.to_json_dict()
-			if room.owner and room.owner.id == current_user.id:
+			if current_user.is_authenticated() and room.owner and room.owner.id == current_user.id:
 				result['isOwner'] = True
 			else:
 				result['isOwner'] = False
@@ -64,10 +64,23 @@ class RoomApi(flask_restful.Resource):
 
 
 class JoinQueueApi(flask_restful.Resource):
-	def post(self, queue_slug):
-		queue = Queue.objects(slug=queue_slug).first()
+	def post(self, queue_id):
+		queue = Queue.objects(id=queue_id).first()
+
+		#Default to no description and accept all resources
+		accepts = queue.resources
+		description = ''
+
+		if request.data:
+			data = json.loads(request.data).get('data')
+			if data.get('accepts'):
+				accepts = Resource.objects(id__in=data.get('accepts'))
+				accepts = [a for a in accepts if a in queue.resources]
+			if data.get('description'):
+				description = data.get('description')
+
 		if current_user.is_authenticated() and queue:
-			queue_element = QueueElement(user=User.objects(email=current_user.email).first(), accepts=queue.resources)
+			queue_element = QueueElement(user=User.objects(id=current_user.id).first(), accepts=accepts, description=description)
 			queue_element.save()
 			queue.add_queue_element(queue_element)
 			queue.save()
@@ -119,10 +132,14 @@ class EditQueueApi(flask_restful.Resource):
 				for resource in resources:
 					id = resource.get('_id')
 					resource_name = resource.get('name') if resource.get('name') else 'Untitled'
+					resource_is_active = resource.get('is_active')
+
 					if id:
 						the_resource = Resource.objects(id=id).first()
 					if id and the_resource:
 						the_resource.name = resource_name
+						if resource_is_active is not None:
+							the_resource.is_active = resource_is_active
 						the_resource.save()
 					elif not id:
 						the_resource = Resource(name=resource_name)
@@ -136,13 +153,12 @@ class EditQueueApi(flask_restful.Resource):
 						if str(resource.id) in deleted_resource_ids:
 							resource.delete()
 
-
-
+				queue.flush_queue()
 
 
 	def delete(self, slug, queue_id):
 		queue = Queue.objects(id=queue_id).first()
-		if current_user.is_authenticated() and queue:
+		if current_user.is_authenticated() and queue and queue.room and queue.room.owner.id==current_user.id:
 			queue.delete()
 
 
@@ -150,8 +166,19 @@ class QueueElementApi(flask_restful.Resource):
 	def delete(self, queue_id, queue_element_id):
 		queue = Queue.objects(id=queue_id).first()
 		queue_element = QueueElement.objects(id=queue_element_id).first()
-		if current_user.is_authenticated() and queue_element and current_user.id == queue_element.user.id and queue:
+		if current_user.is_authenticated() and queue_element and (current_user.id == queue_element.user.id or current_user.id == queue.room.owner.id) and queue:
 			queue.remove_queue_element(queue_element)
 			queue_element.delete()
+
+	def post(self, queue_id, queue_element_id):
+		if request.data:
+			data = json.loads(request.data).get('data')
+			queue = Queue.objects(id=queue_id).first()
+			queue_element = QueueElement.objects(id=queue_element_id).first()
+			if request.data and current_user.is_authenticated() and queue_element and current_user.id == queue_element.user.id and queue:
+				description = data.get('description')
+				if description:
+					queue_element.description = description
+					queue_element.save()
 
 

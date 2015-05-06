@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
+var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngCookies'])
 	.config(function($interpolateProvider){
 	    $interpolateProvider.startSymbol('[[').endSymbol(']]');
 	})
@@ -13,14 +13,26 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
 	        controller: 'RoomController',
 	        controllerAs: 'room',
 	        templateUrl: 'static/detail.html'
+	    })
+	    .when('/404', {
+	        templateUrl: 'static/404.html'
+	    })
+	    .otherwise({
+	        templateUrl: 'static/404.html'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope',
-     function($http, $routeParams, $scope, $interval, $rootScope){
-        console.log($routeParams);
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore', '$location',
+     function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore, $location){
         var value = this;
         value.title = [];
 
+        /**
+        Really hacky, there's an issue where, when we update the data
+        on the page with the loadRoom() function, all popovers close.
+        This is terrible UX, so for now, don't auto-refresh unless no
+        popovers are open.
+        **/
+        $rootScope.openPopovers = 0;
 
         $scope.loadRoom = function() {
             $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
@@ -30,15 +42,15 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
                 $rootScope.roomSlug = data.slug;
             })
             .error(function(data){
-                //Should go to 404
-                //$location.path('/404'); possibly
+                $scope.isOn404=true;
+                console.log($scope.isOn404);
             });
         };
 
         $rootScope.loadRoom = $scope.loadRoom;
 
-        this.join = function(queueSlug) {
-            $http.post('/api/queues/' + queueSlug + '/join/')
+        this.join = function(queue_id) {
+            $http.post('/api/queues/' + queue_id + '/join/')
             .success( function(data) {
                 $scope.loadRoom();
             });
@@ -47,7 +59,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             $rootScope.openQueue = queue;
         };
 
-        var promise = $interval( $scope.loadRoom, 30000);
+        //poll server every 30 seconds unless there are open popovers
+        var promise = $interval( function() {
+                if ($rootScope.openPopovers === 0){
+                    $scope.loadRoom();
+                }
+            }, 30000);
 
         $scope.loadRoom();
 
@@ -155,29 +172,88 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap'])//ui.bootstrap' ])
             $rootScope.editingQueue.deletedResources = [];
         };
     }])
-    .controller('QueueElementController', ['$http', '$scope', function($http, $scope){
+    .controller('QueueElementController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope){
 
+        $scope.openNewQueueElement = function() {
+            var resources = [];
+            for (var i = 0; i < $scope.queue.resources.length; i++){
+                resources.push($scope.queue.resources[i]._id);
+            }
+            $rootScope.newQueueElement = {
+                accepts: resources
+            };
+            $rootScope.openQueue = $scope.queue;
+            console.log($rootScope.newQueueElement.accepts);
+        };
+        $scope.toggleSelection = function(resource_id) {
+             var i = $rootScope.newQueueElement.accepts.indexOf(resource_id);
+
+            if ( i >  -1 ){
+                $rootScope.newQueueElement.accepts.splice(i, 1);
+            } else {
+                $rootScope.newQueueElement.accepts.push(resource_id);
+            }
+        }
+        $scope.submitNewQueueElement = function(newQueueElement) {
+            $http.post('/api/queues/' + $rootScope.openQueue._id + '/join/', {
+                data: newQueueElement
+            }).success(function(data) {
+                $scope.loadRoom();
+            });
+        };
         $scope.delete = function() {
-            $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id).success( function(){
+            $http.delete('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id + '/').success( function(){
                 $scope.loadRoom();
             });
         };
 
+        $scope.save = function() {
+            $http.post('/api/queues/' + $scope.queue._id + '/queue_elements/' + $scope.queue_element._id + '/',
+                {
+                    data: $scope.queue_element
+                }
+            ).success(function(data){
+                $scope.loadRoom();
+            });
+        };
+
+        //This ensures that data isn't fetched while popovers are open
+        // ..which causes popovers to close
+        this.popoverOpen = false;
+        this.togglePopover = function() {
+            if (this.popoverOpen){
+                $rootScope.openPopovers--;
+            } else {
+                $rootScope.openPopovers++;
+            }
+            this.popoverOpen = !this.popoverOpen;
+        }
+
     }])
-    .directive("customPopover", ["$popover", "$compile", function($popover, $compile) {
+    .directive("customPopover", ["$popover", "$compile", "$cookies",
+    function($popover, $compile, $cookies) {
         return {
             restrict: "A",
             link: function(scope, element, attrs) {
+                var title = '';
+                scope.isOpen = false;
+                if (scope.queue_element){
+                    title = scope.queue_element.user.email;
+                }
+
                 var myPopover = $popover(element, {
-                    title: 'My Title',
-                    contentTemplate: '/static/hello.tpl.html',
+                    title: title,
+                    contentTemplate: 'example.html',
                     html: true,
                     trigger: 'manual',
-                    autoClose: true,
+                    placement: 'right',
+                    autoClose: false,
                     scope: scope
                 });
-                scope.showPopover = function() {
-                    myPopover.show();
+
+                scope.togglePopover = function() {
+                    scope.userId = $cookies.userId;
+                    myPopover.toggle();
                 }
             }
         }

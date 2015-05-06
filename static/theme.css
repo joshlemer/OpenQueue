@@ -1,3 +1,8 @@
+.popover.right {
+  max-width: unset;
+  min-width: 200px;
+  margin-left: 40px !important;
+}
 
 .occupied-current-user .member {
     margin-top: 15px;
@@ -47,8 +52,13 @@
   min-height: 120px !important;
 }
 
+.resources-container .resource-info-container .resource-info.inactive {
+  background-color: darkgray;
+}
+
 .resources-container .resource-info-container .resource-info {
   min-height: 100px;
+  min-width: 60px;
   border-radius: 3px;
   background-color: #1B8DBB;
   padding-bottom: 10px;

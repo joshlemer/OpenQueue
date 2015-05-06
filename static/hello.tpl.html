@@ -1,5 +1,8 @@
 <div ng-controller="QueueElementController">
 
+    <div ng-repeat="resource in queue.resources">
+        <input type="checkbox">[[resource.name]]
+    </div>
     <div ng-click="delete()">Finish</div>
 
 </div>

@@ -2,10 +2,11 @@ import datetime, time
 from flask import url_for
 from __init__ import db, bcrypt
 from slugify import UniqueSlugify
+from flask.ext.login import current_user
 
 class User(db.Document):
-	user_id = db.LongField(min_value=0)
 	email = db.EmailField(unique=True)
+	name = db.StringField(max_length = 255, default='')
 	password = db.StringField(default=True)
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
@@ -21,6 +22,7 @@ class User(db.Document):
 
 		return {
 			'_id': str(self.id),
+
 			'email': self.email,
 		}
 
@@ -39,6 +41,7 @@ class QueueElement(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	user = db.ReferenceField('User')
 	accepts = db.ListField(db.ReferenceField('Resource'))
+	description = db.StringField('')
 
 	def __unicode__(self):
 		result = ''
@@ -54,6 +57,7 @@ class QueueElement(db.Document):
 		data['_id'] = str(data['_id'])
 		data['user'] = self.user.to_json_dict()
 		data['created_at'] = time.mktime(data['created_at'].timetuple())
+
 		if follow_refs:
 			data['accepts'] = [ r.to_json_dict() for r in self.accepts ]
 		else:
@@ -65,6 +69,7 @@ class Resource(db.Document):
 	created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 	name = db.StringField(max_length=255, required=True)
 	current_queue_element = db.ReferenceField('QueueElement', reverse_delete_rule=db.NULLIFY)
+	is_active = db.BooleanField(default=True)
 
 	def __unicode__(self):
 		return self.name
@@ -129,7 +134,7 @@ class Queue(db.Document):
 	def flush_queue(self):
 		for queue_element in self.queue_elements:
 			for resource in queue_element.accepts:
-				if resource.current_queue_element is None:
+				if resource.current_queue_element is None and resource.is_active:
 					resource.current_queue_element = queue_element
 					resource.save()
 					self.queue_elements.remove(queue_element)
