@@ -61,26 +61,7 @@
 
 {% include "modals/newRoom.html" %}
 
-<div class="modal fade" id="createQueueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" ng-controller="NewQueueController as newQueue">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">New Queue</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="queueName">Queue Name</label>
-                    <input ng-model='newqueue.name'type="text" class="form-control" id="queueName" placeholder="Enter Queue Name">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="submit(newqueue)" data-dismiss="modal">Create</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% include "modals/createQueue.html" %}
 
 <div class="modal fade" id="editQueueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
