@@ -6,7 +6,8 @@ from flask.ext.login import current_user
 
 class User(db.Document):
 	email = db.EmailField(unique=True)
-	name = db.StringField(max_length = 255, default='')
+	first_name = db.StringField(max_length = 35, default='')
+	last_name = db.StringField(max_length = 35, default='')
 	password = db.StringField(default=True)
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
