@@ -132,10 +132,14 @@ class EditQueueApi(flask_restful.Resource):
 				for resource in resources:
 					id = resource.get('_id')
 					resource_name = resource.get('name') if resource.get('name') else 'Untitled'
+					resource_is_active = resource.get('is_active')
+
 					if id:
 						the_resource = Resource.objects(id=id).first()
 					if id and the_resource:
 						the_resource.name = resource_name
+						if resource_is_active is not None:
+							the_resource.is_active = resource_is_active
 						the_resource.save()
 					elif not id:
 						the_resource = Resource(name=resource_name)
@@ -149,8 +153,7 @@ class EditQueueApi(flask_restful.Resource):
 						if str(resource.id) in deleted_resource_ids:
 							resource.delete()
 
-
-
+				queue.flush_queue()
 
 
 	def delete(self, slug, queue_id):

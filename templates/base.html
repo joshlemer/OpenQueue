@@ -121,9 +121,9 @@
                             <th>
                                 Resource
                             </th>
-                            <!--<th>-->
-                                <!--Active-->
-                            <!--</th>-->
+                            <th>
+                                Active
+                            </th>
                             <th>
 
                             </th>
@@ -132,7 +132,7 @@
                     <tbody>
                         <tr ng-repeat="resource in editingQueue.resources">
                             <td><input ng-model='resource.name'type="text" class="form-control" placeholder="Enter Resource Name" ></td>
-                            <!--<td><input type="checkbox"></td>-->
+                            <td><input type="checkbox" ng-model="resource.is_active"></td>
                             <td><button ng-show="!resource.isNew"type="button" class="pull-left btn btn-danger" ng-click="deleteResource(resource._id)" >Delete</button></td>
 
                         </tr>

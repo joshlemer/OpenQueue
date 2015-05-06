@@ -29,18 +29,16 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         $rootScope.openPopovers = 0;
 
         $scope.loadRoom = function() {
-            if ($rootScope.openPopovers===0){
-                $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
-                    value.title=data;
-                    value.data = data;
-                    $scope.the_room = data;
-                    $rootScope.roomSlug = data.slug;
-                })
-                .error(function(data){
-                    //Should go to 404
-                    //$location.path('/404'); possibly
-                });
-            }
+            $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
+                value.title=data;
+                value.data = data;
+                $scope.the_room = data;
+                $rootScope.roomSlug = data.slug;
+            })
+            .error(function(data){
+                //Should go to 404
+                //$location.path('/404'); possibly
+            });
         };
 
         $rootScope.loadRoom = $scope.loadRoom;
@@ -55,7 +53,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             $rootScope.openQueue = queue;
         };
 
-        var promise = $interval( $scope.loadRoom, 30000);
+        //poll server every 30 seconds unless there are open popovers
+        var promise = $interval( function() {
+                if ($rootScope.openPopovers === 0){
+                    $scope.loadRoom();
+                }
+            }, 30000);
 
         $scope.loadRoom();
 
