@@ -14,6 +14,8 @@ MONGO_URL = os.environ.get('MONGO_URL')
 if not MONGO_URL:
 	MONGO_URL = 'mongodb://localhost:27017/qme'
 
+MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31882/queueme'
+
 app.config['MONGO_URI'] = MONGO_URL
 app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
 app.config['SECRET_KEY'] = 'password'
