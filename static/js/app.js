@@ -47,7 +47,6 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             })
             .error(function(data){
                 $scope.isOn404=true;
-                console.log($scope.isOn404);
             });
         };
 
