@@ -13,10 +13,16 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	        controller: 'RoomController',
 	        controllerAs: 'room',
 	        templateUrl: 'static/detail.html'
+	    })
+	    .when('/404', {
+	        templateUrl: 'static/404.html'
+	    })
+	    .otherwise({
+	        templateUrl: 'static/404.html'
 	    });
 	}])
-    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore',
-     function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore){
+    .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore', '$location',
+     function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore, $location){
         var value = this;
         value.title = [];
 
@@ -36,8 +42,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 $rootScope.roomSlug = data.slug;
             })
             .error(function(data){
-                //Should go to 404
-                //$location.path('/404'); possibly
+                $scope.isOn404=true;
+                console.log($scope.isOn404);
             });
         };
 

@@ -1,4 +1,4 @@
-<div class="page-header row" ng-show="the_room">
+<div class="page-header row" ng-hide="isOn404" ng-show="the_room">
     <h1 class="col-xs-10">
         [[the_room.name]]
         <small ng-show="the_room.owner.email">[['owned by ' + the_room.owner.email]]</small>
@@ -67,9 +67,11 @@
         <span ng-show="queue_element.accepts.length==0">None<br></span>
 
         <button class="btn btn-danger btn-xs" ng-show="queue_element.user._id==userId" ng-click="delete()" title="Finish using this resource">Finish</button>
+        <button class="btn btn-danger btn-xs" ng-show="room.data.owner._id==userId && queue_element.user._id!=userId" ng-click="delete()" title="Remove, as owner of this room">Delete (as owner)</button>
         <button class="btn btn-primary btn-xs" ng-show="queue_element.user._id==userId" ng-click="save()">Save</button>
 
     </div>
 </script>
 
+<div ng-show="isOn404">404 - Page not found</div>
 

@@ -101,3 +101,6 @@ def postSignup():
 
 	return redirect('/')
 
+@app.route('/404', methods=['GET'])
+def get404():
+	return render_template('404.html')
