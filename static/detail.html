@@ -5,8 +5,10 @@
     </h1>
     <div class="col-xs-1 pull-right" ng-show="the_room.isOwner"><div class="btn btn-default" data-toggle="modal" data-target="#editRoomModal" class="navbar-text" ng-controller="EditRoomController"ng-click="openRoom()">Edit Room</div></div>
     <div class="col-xs-1 pull-right" ng-show="the_room.isOwner"><div class="btn btn-default" data-toggle="modal" data-target="#createQueueModal" class="navbar-text">Add Queue</div></div>
+    <div class="col-xs-1 pull-right" ng-click="leaveRoom()" ng-show="!the_room.isOwner && the_room.isMember"><div class="btn btn-default" class="navbar-text">Leave Room</div></div>
 </div>
 <!--<p>[[ room.data.created_at | date ]]</p>-->
+[[the_room.members]]
 <hr>
 <div ng-repeat="queue in room.data.queues" class="queue-container container">
     <div class="row">

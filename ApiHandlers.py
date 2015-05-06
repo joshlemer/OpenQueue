@@ -44,10 +44,20 @@ class RoomApi(flask_restful.Resource):
 
 		if room and (room.is_public or user==room.owner or  user in room.members):
 			result = room.to_json_dict()
-			if current_user.is_authenticated() and room.owner and room.owner.id == current_user.id:
-				result['isOwner'] = True
+			if current_user.is_authenticated():
+				if room.owner and room.owner.id == current_user.id:
+					result['isOwner'] = True
+				else:
+					result['isOwner'] = False
+				if room.members and user and user in room.members:
+					result['isMember'] = True
+				else:
+					result['isMember'] = False
+
 			else:
 				result['isOwner'] = False
+				result['isMember'] = False
+
 			return result
 		abort(404)
 
@@ -87,6 +97,15 @@ class RoomApi(flask_restful.Resource):
 
 				room.save()
 
+
+class LeaveRoomApi(flask_restful.Resource):
+	def post(self, slug):
+		if current_user.is_authenticated():
+			user = User.objects(id=current_user.id).first()
+			room = Room.objects(slug=slug).first()
+			if user and room:
+				room.members.remove(user)
+				room.save()
 
 
 class JoinQueueApi(flask_restful.Resource):

@@ -23,6 +23,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	}])
 	.controller('HomeController', ['$http', '$scope', '$rootScope', '$cookies',
 	function($http, $scope, $rootScope, $cookies) {
+	    $scope.userId = $cookies.userId;
 	    $scope.loadHome = function() {
 	        $http.get('/api/home/').success(function(data){
 	            $scope.ownedRooms = data.owned_rooms;
@@ -84,6 +85,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 promise = undefined;
             }
         });
+
+        $scope.leaveRoom = function() {
+            $http.post('/api/rooms/' + $scope.roomSlug + '/leave/').success(function(data){
+                $scope.loadRoom();
+            });
+        };
 
     }])
     .controller('NewRoomController', ['$scope', '$http', function($scope, $http) {

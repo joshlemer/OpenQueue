@@ -30,12 +30,12 @@
                     <div id="navbar-main">
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a data-toggle="modal" data-target="#myModal" >
-                                    New Room
-                                </a>
-                            </li>
                             {% if current_user.is_authenticated() %}
+                                <li>
+                                    <a href data-toggle="modal" data-target="#myModal" >
+                                        New Room
+                                    </a>
+                                </li>
                                 <li>
                                     <a >
                                         Logged in as <span class='navbar-email'>{{ current_user.email }}</span>

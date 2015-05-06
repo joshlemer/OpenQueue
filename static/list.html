@@ -1,8 +1,14 @@
-<h1>My Rooms</h1>
-<div ng-repeat="room in ownedRooms">
-    <h2><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h2>
-</div>
-<h1>My Memberships</h1>
-<div ng-repeat="room in memberships">
-    <h2><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h2>
+<div ng-show="userId">
+
+    <h3>My Rooms</h3>
+    <div ng-repeat="room in ownedRooms">
+        <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+    </div>
+    <h4 ng-show="ownedRooms.length==0">You don't have any rooms! Create one by clicking 'New Room' in the navbar.</h4>
+
+    <h3>My Memberships</h3>
+    <div ng-repeat="room in memberships">
+        <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+    </div>
+    <h4 ng-show="memberships.length==0">You haven't been added as a member to any rooms yet.</h4>
 </div>
