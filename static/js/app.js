@@ -21,6 +21,10 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	        templateUrl: 'static/404.html'
 	    });
 	}])
+	.controller('HomeController', ['$http', '$scope', '$rootScope', '$cookies',
+	function($http, $scope, $rootScope, $cookies) {
+
+	}])
     .controller('RoomController',['$http', '$routeParams','$scope', '$interval', '$rootScope', '$cookies', '$cookieStore', '$location',
      function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore, $location){
         var value = this;
