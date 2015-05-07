@@ -161,6 +161,11 @@ class Room(db.Document):
 	def get_absolute_url(self):
 		return url_for('room', kwargs={"slug": self.slug})
 
+	#Bug in mongoengine, can't reverse_delete_rule on Room from User because of circular dependency between the two
+	def delete(self, *args, **kwargs):
+		User.objects.update(pull__starred_rooms=self)
+		super(Room, self).delete(*args, **kwargs)
+
 	def save(self, *args, **kwargs):
 		if not self.slug:
 			self.slug = UniqueSlugify(uids=[r.slug for r in Room.objects])(self.name)
