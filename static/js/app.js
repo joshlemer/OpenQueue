@@ -61,6 +61,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 $rootScope.roomSlug = data.slug;
             })
             .error(function(data){
+                $scope.the_room = {};
                 $scope.isOn404=true;
             });
         };
@@ -88,7 +89,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 if ($rootScope.openPopovers === 0){
                     $scope.loadRoom();
                 }
-            }, 30000);
+            }, 5000);
 
         $scope.loadRoom();
 
