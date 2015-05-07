@@ -25,7 +25,7 @@ app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
 app.config['MONGODB_PORT'] = '31822'
 app.config['MONGODB_DATABASE'] = 'queueme'
 app.config['MONGODB_USERNAME'] = 'queueme'
-app.config['MONGODB_DATABASE'] = 'password'
+app.config['MONGODB_PASSWORD'] = 'password'
 
 db = MongoEngine(app)
 app.session_interface = MongoEngineSessionInterface(db)
