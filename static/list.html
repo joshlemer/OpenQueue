@@ -4,11 +4,17 @@
     <div ng-repeat="room in ownedRooms">
         <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
     </div>
-    <h4 ng-show="ownedRooms.length==0">You don't have any rooms! Create one by clicking 'New Room' in the navbar.</h4>
+    <h4 ng-show="ownedRooms.length==0 || !ownedRooms">You don't have any rooms! Create one by clicking 'New Room' in the navbar.</h4>
 
     <h3>My Memberships</h3>
     <div ng-repeat="room in memberships">
         <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
     </div>
-    <h4 ng-show="memberships.length==0">You haven't been added as a member to any rooms yet.</h4>
+    <h4 ng-show="memberships.length==0 || !memberships">You haven't been added as a member to any rooms yet.</h4>
+</div>
+
+<div ng-show="!userId">
+    <h1>Welcome to QueueMe!</h1>
+    <p>To begin, please <a href="/login">log in</a> or <a href="/signup">sign up</a> for a free account.</p>
+    <p>QueueMe is 100% Open Source software! For more information, find us on <a href="www.github.com/QueueMe/QueueMe">Github</a>.</p>
 </div>
