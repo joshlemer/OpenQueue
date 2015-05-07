@@ -12,6 +12,7 @@ class User(db.Document):
 	active = db.BooleanField(default=True)
 	isAdmin = db.BooleanField(default=False)
 	timestamp = db.DateTimeField(default=datetime.datetime.now())
+	starred_rooms = db.ListField(db.ReferenceField('Room'))
 
 	def __unicode__(self):
 		return self.email

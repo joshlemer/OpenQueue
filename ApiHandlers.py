@@ -13,6 +13,8 @@ class HomeApi(flask_restful.Resource):
 			if user:
 				user_owned_rooms = Room.objects(owner__in=[user])
 				user_member_rooms = Room.objects(members__in=[user])
+				user_starred_rooms = user.starred_rooms
+				print user_starred_rooms
 
 				return {
 					'owned_rooms': [
@@ -26,7 +28,13 @@ class HomeApi(flask_restful.Resource):
 						'name': r.name,
 						'slug': r.slug
 						}
-						for r in user_member_rooms]
+						for r in user_member_rooms],
+					'starred_rooms': [
+						{
+							'name': r.name,
+							'slug': r.slug
+						}
+						for r in user_starred_rooms]
 				}
 
 		return {}
@@ -53,6 +61,10 @@ class RoomApi(flask_restful.Resource):
 					result['isMember'] = True
 				else:
 					result['isMember'] = False
+				if room in user.starred_rooms:
+					result['isStarred'] = True
+				else:
+					result['isStarred'] = False
 
 			else:
 				result['isOwner'] = False
@@ -107,6 +119,18 @@ class LeaveRoomApi(flask_restful.Resource):
 				room.members.remove(user)
 				room.save()
 
+class StarRoomApi(flask_restful.Resource):
+	def post(self, slug):
+		if current_user.is_authenticated():
+			user = User.objects(id=current_user.id).first()
+			room = Room.objects(slug=slug).first()
+			if user and room:
+				if room in user.starred_rooms:
+					user.starred_rooms.remove(room)
+					pass
+				else:
+					user.starred_rooms.append(room)
+				user.save()
 
 class JoinQueueApi(flask_restful.Resource):
 	def post(self, queue_id):

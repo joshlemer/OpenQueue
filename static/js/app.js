@@ -28,6 +28,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	        $http.get('/api/home/').success(function(data){
 	            $scope.ownedRooms = data.owned_rooms;
 	            $scope.memberships = data.memberships;
+	            $scope.starredRooms = data.starred_rooms
 	        });
 	    }
 	    $scope.loadHome();
@@ -37,6 +38,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
      function($http, $routeParams, $scope, $interval, $rootScope, $cookies, $cookieStore, $location){
         var value = this;
         value.title = [];
+        $scope.userId = $cookies.userId;
 
         /**
         Really hacky, there's an issue where, when we update the data
@@ -55,6 +57,12 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             })
             .error(function(data){
                 $scope.isOn404=true;
+            });
+        };
+
+        $scope.starRoom = function() {
+            $http.post('/api/rooms/' + $rootScope.roomSlug + '/star/').success(function(data){
+                $scope.loadRoom();
             });
         };
 

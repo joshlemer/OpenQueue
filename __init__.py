@@ -41,6 +41,7 @@ api.add_resource(QueueElementApi, '/api/queues/<queue_id>/queue_elements/<queue_
 api.add_resource(QueueApi, '/api/rooms/<slug>/queues/')
 api.add_resource(EditQueueApi, '/api/rooms/<slug>/queues/<queue_id>/')
 api.add_resource(HomeApi, '/api/home/')
+api.add_resource(StarRoomApi, '/api/rooms/<slug>/star/')
 
 if __name__ == '__main__':
 	app.run()
@@ -127,7 +128,9 @@ def postSignup():
 		new_user = User(first_name=first_name, last_name=last_name, email=email, password = pw_hash)
 		new_user.save()
 		login_user(new_user, remember=True)
-		return redirect('/')
+		resp = make_response(redirect('/'))
+		resp.set_cookie('userId', str(current_user.id))
+		return resp
 
 	return redirect('/signup')
 
