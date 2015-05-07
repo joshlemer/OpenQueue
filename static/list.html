@@ -5,7 +5,7 @@
     <div ng-repeat="room in starredRooms">
         <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
     </div>
-    <h4 ng-show="starred_rooms.length==0">You haven't starred any rooms yet!</h4>
+    <h4 ng-show="starredRooms.length==0">You haven't starred any rooms yet!</h4>
 
     <h3>My Rooms</h3>
     <div ng-repeat="room in ownedRooms">

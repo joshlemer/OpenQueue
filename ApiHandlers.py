@@ -88,15 +88,15 @@ class RoomApi(flask_restful.Resource):
 				deleted_member_ids = data.get('deletedMembers')
 				is_public = data.get('is_public')
 
-
 				if room_name:
 					room.name = room_name
 
 				if new_members:
 					for new_member in new_members:
 						user = User.objects(email=new_member.get('email')).first()
-						if user and user != room.owner:
-							room.update(add_to_set__members=user)
+						if user and user != room.owner and user not in room.members:
+							room.members.append(user)
+							room.save()
 
 				if deleted_member_ids:
 					for deleted_member_id in deleted_member_ids:

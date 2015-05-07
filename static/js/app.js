@@ -96,7 +96,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 
         $scope.leaveRoom = function() {
             $http.post('/api/rooms/' + $scope.roomSlug + '/leave/').success(function(data){
-                $scope.loadRoom();
+                //$scope.loadRoom();
+                $location.path('/')
             });
         };
 
