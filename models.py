@@ -134,14 +134,19 @@ class Queue(db.Document):
 		self.flush_queue()
 
 	def flush_queue(self):
+		removed_queue_elements = []
 		for queue_element in self.queue_elements:
 			for resource in queue_element.accepts:
 				if resource.current_queue_element is None and resource.is_active:
 					resource.current_queue_element = queue_element
 					resource.save()
-					self.queue_elements.remove(queue_element)
+					removed_queue_elements.append(queue_element)
 					self.save()
 					break
+
+		self.queue_elements = [qe for qe in self.queue_elements if qe not in removed_queue_elements]
+		self.save()
+
 
 
 class Room(db.Document):
