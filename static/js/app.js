@@ -31,6 +31,11 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	            $scope.starredRooms = data.starred_rooms
 	        });
 	    }
+        $scope.starRoom = function(roomSlug) {
+            $http.post('/api/rooms/' + roomSlug + '/star/').success(function(data){
+                $scope.loadHome();
+            });
+        };
 	    $scope.loadHome();
 
 	}])
@@ -254,7 +259,6 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
             }
             this.popoverOpen = !this.popoverOpen;
         }
-
     }])
     .directive("customPopover", ["$popover", "$compile", "$cookies",
     function($popover, $compile, $cookies) {

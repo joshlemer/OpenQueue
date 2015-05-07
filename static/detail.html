@@ -61,7 +61,7 @@
 </div>
 
 <script type="text/ng-template" id="example.html">
-    <div ng-controller="QueueElementController">
+    <div ng-controller="QueueElementController as queueElementController">
 
         <textarea ng-show="queue_element.user._id==userId" rows="3" class="form-control" ng-model="queue_element.description"></textarea>
 
@@ -72,9 +72,9 @@
         <span ng-repeat="resource in queue_element.accepts">[[resource.name]]<br></span>
         <span ng-show="queue_element.accepts.length==0">None<br></span>
 
-        <button class="btn btn-danger btn-xs" ng-show="queue_element.user._id==userId" ng-click="delete()" title="Finish using this resource">Finish</button>
-        <button class="btn btn-danger btn-xs" ng-show="room.data.owner._id==userId && queue_element.user._id!=userId" ng-click="delete()" title="Remove, as owner of this room">Delete (as owner)</button>
-        <button class="btn btn-primary btn-xs" ng-show="queue_element.user._id==userId" ng-click="save()">Save</button>
+        <button class="btn btn-danger btn-xs" ng-show="queue_element.user._id==userId" ng-click="queueElement.togglePopover();delete();" title="Finish using this resource">Finish</button>
+        <button class="btn btn-danger btn-xs" ng-show="room.data.owner._id==userId && queue_element.user._id!=userId" ng-click="queueElement.togglePopover();delete()" title="Remove, as owner of this room">Delete (as owner)</button>
+        <button class="btn btn-primary btn-xs" ng-show="queue_element.user._id==userId" ng-click="queueElement.togglePopover();save()">Save</button>
 
     </div>
 </script>
