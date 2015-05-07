@@ -14,7 +14,6 @@ class HomeApi(flask_restful.Resource):
 				user_owned_rooms = Room.objects(owner__in=[user])
 				user_member_rooms = Room.objects(members__in=[user])
 				user_starred_rooms = user.starred_rooms
-				print user_starred_rooms
 
 				return {
 					'owned_rooms': [
