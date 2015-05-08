@@ -10,22 +10,22 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 api = Api(app)
 
-MONGO_URL = os.environ.get('MONGO_URL')
-if not MONGO_URL:
-	MONGO_URL = 'mongodb://localhost:27017/qme'
+# MONGO_URL = os.environ.get('MONGO_URL')
+# if not MONGO_URL:
+# 	MONGO_URL = 'mongodb://localhost:27017/qme'
+#
+# #MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
+#
+# app.config['MONGO_URI'] = MONGO_URL
+# app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
+# app.config['SECRET_KEY'] = 'password'
+# app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
 
-#MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
-
-app.config['MONGO_URI'] = MONGO_URL
-app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
-app.config['SECRET_KEY'] = 'password'
-app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
-
-# app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
-# app.config['MONGODB_PORT'] = '31822'
-# app.config['MONGODB_DATABASE'] = 'queueme'
-# app.config['MONGODB_USERNAME'] = 'queueme'
-# app.config['MONGODB_PASSWORD'] = 'password'
+app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
+app.config['MONGODB_PORT'] = '31822'
+app.config['MONGODB_DATABASE'] = 'queueme'
+app.config['MONGODB_USERNAME'] = 'queueme'
+app.config['MONGODB_PASSWORD'] = 'password'
 
 db = MongoEngine(app)
 app.session_interface = MongoEngineSessionInterface(db)
