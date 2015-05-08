@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, render_template, redirect, session, url_for, request, get_flashed_messages, make_response
 from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
+from mongoengine import connect
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask.ext.bcrypt import Bcrypt
 from pymongo import read_preferences
@@ -15,26 +16,34 @@ if 'HEROKU_ENVIRONMENT' in os.environ:
 	on_heroku = True
 	print 'Detected Heroku Environment'
 
-MONGO_URL = os.environ.get('MONGO_URL')
-if not MONGO_URL:
-	MONGO_URL = 'mongodb://localhost:27017/qme'
-
-MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
-
-app.config['MONGO_URI'] = MONGO_URL
-app.config["MONGODB_SETTINGS"] = {'db': 'qme'}
+# MONGO_URL = os.environ.get('MONGO_URL')
+# if not MONGO_URL:
+# 	MONGO_URL = 'mongodb://localhost:27017/qme'
+#
+# MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
+#
+# app.config['MONGO_URI'] = MONGO_URL
+app.config["MONGODB_SETTINGS"] = {
+	'host':'ds031822.mongolab.com',
+	'db': 'queueme',
+	'port': 31822,
+	'username': 'queueme',
+	'password': 'password'
+}
 app.config['SECRET_KEY'] = 'password'
 app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
+#
+# if on_heroku:
+# 	app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
+# 	app.config['MONGODB_PORT'] = '31822'
+# 	app.config['MONGODB_DATABASE'] = 'queueme'
+# 	app.config['MONGODB_USERNAME'] = 'queueme'
+# 	app.config['MONGODB_PASSWORD'] = 'password'
 
-if on_heroku:
-	app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
-	app.config['MONGODB_PORT'] = '31822'
-	app.config['MONGODB_DATABASE'] = 'queueme'
-	app.config['MONGODB_USERNAME'] = 'queueme'
-	app.config['MONGODB_PASSWORD'] = 'password'
-
+#connect('queueme', host='mongodb://queueme:password@ds031822.mongolab.com:31811/queueme')
 db = MongoEngine(app)
 app.session_interface = MongoEngineSessionInterface(db)
+
 
 flask_bcrypt = Bcrypt(app)
 
@@ -76,8 +85,6 @@ def login():
 
 @app.route('/login/check', methods=['post'])
 def login_check():
-	# validate username and password
-	#user = User.get(request.form['username'])
 	from models import User
 	user = User.objects(email=request.form['email']).first()
 	pw_check = bcrypt.check_password_hash(user.password , request.form['password'] ) if user else None
