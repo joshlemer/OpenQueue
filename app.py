@@ -1,7 +1,6 @@
 import os
 from flask import Flask, flash, render_template, redirect, session, url_for, request, get_flashed_messages, make_response
 from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
-from mongoengine import connect
 from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask.ext.bcrypt import Bcrypt
 from pymongo import read_preferences
