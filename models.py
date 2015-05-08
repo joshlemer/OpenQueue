@@ -1,6 +1,6 @@
 import datetime, time
 from flask import url_for
-from __init__ import db, bcrypt
+from app import db, bcrypt
 from slugify import UniqueSlugify
 from flask.ext.login import current_user
 
