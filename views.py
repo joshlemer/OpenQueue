@@ -10,8 +10,7 @@ rooms = Blueprint('rooms', __name__, template_folder='templates')
 class ListView(MethodView):
 
     def get(self):
-        rooms = Room.objects.all()
-        return render_template('base.html', rooms=rooms, current_user=current_user)
+        return render_template('base.html', current_user=current_user)
 
 
 class DetailView(MethodView):
