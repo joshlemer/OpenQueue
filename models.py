@@ -85,6 +85,11 @@ class Resource(db.Document):
 
 		return data
 
+	def delete(self, *args, **kwargs):
+		QueueElement.objects.update(pull__accepts=self)
+		self.current_queue_element.delete()
+		super(Resource, self).delete(*args, **kwargs)
+
 	def release(self):
 		self.current_queue_element = None
 		self.save()
