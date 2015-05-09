@@ -271,7 +271,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 var title = '';
                 scope.isOpen = false;
                 if (scope.queue_element){
-                    title = scope.queue_element.user.email;
+                    title = scope.queue_element.user.first_name + ' ' + scope.queue_element.user.last_name;
                 }
 
                 var myPopover = $popover(element, {
