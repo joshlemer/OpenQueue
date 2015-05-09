@@ -89,7 +89,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 if ($rootScope.openPopovers === 0){
                     $scope.loadRoom();
                 }
-            }, 5000);
+            }, 30000);
 
         $scope.loadRoom();
 
