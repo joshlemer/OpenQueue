@@ -54,7 +54,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         $rootScope.openPopovers = 0;
 
         $scope.loadRoom = function() {
-            $http.get('/api/rooms/' + $routeParams.roomName).success(function(data){
+            $http.get('/api/rooms/' + $routeParams.roomName + '/').success(function(data){
                 value.title=data;
                 value.data = data;
                 $scope.the_room = data;
