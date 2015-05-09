@@ -26,6 +26,10 @@ class User(db.Document):
 			'_id': str(self.id),
 
 			'email': self.email,
+
+			'first_name': self.first_name,
+
+			'last_name': self.last_name
 		}
 
 	def is_active(self):
