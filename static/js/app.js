@@ -44,6 +44,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         var value = this;
         value.title = [];
         $scope.userId = $cookies.userId;
+        $scope.isOn404 = false;
 
         /**
         Really hacky, there's an issue where, when we update the data
@@ -59,6 +60,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
                 value.data = data;
                 $scope.the_room = data;
                 $rootScope.roomSlug = data.slug;
+                $scope.isOn404=false;
             })
             .error(function(data){
                 $scope.the_room = {};
