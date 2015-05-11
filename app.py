@@ -28,7 +28,7 @@ if 'HEROKU_ENVIRONMENT' in os.environ:
 	app.config['MONGODB_SETTINGS'] = {
 		'host': host,
 		'db': db,
-		'port': port,
+		'port': int(port),
 		'username': username,
 		'password': password
 	}
