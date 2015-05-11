@@ -15,12 +15,22 @@ on_heroku = False
 if 'HEROKU_ENVIRONMENT' in os.environ:
 	on_heroku = True
 	print 'Detected Heroku Environment'
+
+	host = os.environ['MONGODB_HOST']
+	db = os.environ['MONGODB_DB']
+	port = os.environ['MONGODB_PORT']
+	username = os.environ['MONGODB_USERNAME']
+	password = os.environ['MONGODB_PASSWORD']
+
+	if not host and db and port and username and password:
+		print 'You forgot to set your environment variables correctly for MongoDB'
+
 	app.config['MONGODB_SETTINGS'] = {
-		'host':'ds031822.mongolab.com',
-		'db': 'queueme',
-		'port': 31822,
-		'username': 'queueme',
-		'password': 'password'
+		'host': host,
+		'db': db,
+		'port': port,
+		'username': username,
+		'password': password
 	}
 else:
 	#Locally hosting
