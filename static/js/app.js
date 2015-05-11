@@ -24,6 +24,8 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
 	.controller('HomeController', ['$http', '$scope', '$rootScope', '$cookies',
 	function($http, $scope, $rootScope, $cookies) {
 	    $scope.userId = $cookies.userId;
+	    $rootScope.remember_token = $cookies.remember_token;
+
 	    $scope.loadHome = function() {
 	        $http.get('/api/home/').success(function(data){
 	            $scope.ownedRooms = data.owned_rooms;
@@ -45,6 +47,7 @@ var app = angular.module('app', ['ngRoute', 'mgcrea.ngStrap', 'ngSanitize', 'ngC
         value.title = [];
         $scope.userId = $cookies.userId;
         $scope.isOn404 = false;
+	    $rootScope.remember_token = $cookies.remember_token;
 
         /**
         Really hacky, there's an issue where, when we update the data

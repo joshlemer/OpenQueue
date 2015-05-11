@@ -1,26 +1,32 @@
-<div ng-show="userId">
+<div ng-show="remember_token">
 
-    <h3>Starred Rooms</h3>
-    <div ng-repeat="room in starredRooms">
-        <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a><div class="btn btn-xs btn-default pull-right" ng-click="starRoom(room.slug)">Unstar</div></h4>
+    <div ng-show="starredRooms">
+        <h3>Starred Rooms</h3>
+        <div ng-repeat="room in starredRooms">
+            <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a><div class="btn btn-xs btn-default pull-right" ng-click="starRoom(room.slug)">Unstar</div></h4>
+        </div>
+        <h4 ng-show="starredRooms.length==0">You haven't starred any rooms yet!</h4>
     </div>
-    <h4 ng-show="starredRooms.length==0">You haven't starred any rooms yet!</h4>
 
-    <h3>My Rooms</h3>
-    <div ng-repeat="room in ownedRooms">
-        <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+    <div ng-show="ownedRooms">
+        <h3>My Rooms</h3>
+        <div ng-repeat="room in ownedRooms">
+            <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+        </div>
+        <h4 ng-show="ownedRooms && ownedRooms.length==0">You don't have any rooms! Create one by clicking 'New Room' in the navbar.</h4>
     </div>
-    <h4 ng-show="ownedRooms && ownedRooms.length==0">You don't have any rooms! Create one by clicking 'New Room' in the navbar.</h4>
 
-    <h3>My Memberships</h3>
-    <div ng-repeat="room in memberships">
-        <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+    <div ng-show="memberships">
+        <h3>My Memberships</h3>
+        <div ng-repeat="room in memberships">
+            <h4><a href="[['#/rooms/' + room.slug]]">[[room.name]]</a></h4>
+        </div>
+        <h4 ng-show="memberships && memberships.length==0">You haven't been added as a member to any rooms yet.</h4>
     </div>
-    <h4 ng-show="memberships && memberships.length==0">You haven't been added as a member to any rooms yet.</h4>
 </div>
 
-<div ng-show="!userId">
-    <h1>Welcome to QueueMe!</h1>
+<div ng-show="!remember_token">
+    <h1>Welcome to OpenQueue!</h1>
     <p>To begin, please <a href="/login">log in</a> or <a href="/signup">sign up</a> for a free account.</p>
-    <p>QueueMe is 100% Open Source software! For more information, find us on <a href="https://www.github.com/QueueMe/QueueMe">Github</a>.</p>
+    <p>OpenQueue is 100% Open Source software! For more information, find us on <a href="https://www.github.com/QueueMe/QueueMe">Github</a>.</p>
 </div>
