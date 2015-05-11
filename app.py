@@ -11,38 +11,31 @@ bcrypt = Bcrypt(app)
 api = Api(app)
 
 on_heroku = False
+
 if 'HEROKU_ENVIRONMENT' in os.environ:
 	on_heroku = True
 	print 'Detected Heroku Environment'
+	app.config['MONGODB_SETTINGS'] = {
+		'host':'ds031822.mongolab.com',
+		'db': 'queueme',
+		'port': 31822,
+		'username': 'queueme',
+		'password': 'password'
+	}
+else:
+	#Locally hosting
 
-# MONGO_URL = os.environ.get('MONGO_URL')
-# if not MONGO_URL:
-# 	MONGO_URL = 'mongodb://localhost:27017/qme'
-#
-# MONGO_URL = 'mongodb://queueme:password@ds031822.mongolab.com:31822/queueme'
-#
-# app.config['MONGO_URI'] = MONGO_URL
-app.config["MONGODB_SETTINGS"] = {
-	'host':'ds031822.mongolab.com',
-	'db': 'queueme',
-	'port': 31822,
-	'username': 'queueme',
-	'password': 'password'
-}
+	app.config['MONGODB_SETTINGS'] = {
+		'host':'localhost',
+		'db': 'openqueue',
+		'port': 27017,
+	}
+
 app.config['SECRET_KEY'] = 'password'
 app.config['read_preference'] = read_preferences.ReadPreference.PRIMARY
-#
-# if on_heroku:
-# 	app.config['MONGODB_HOST'] = 'ds031822.mongolab.com'
-# 	app.config['MONGODB_PORT'] = '31822'
-# 	app.config['MONGODB_DATABASE'] = 'queueme'
-# 	app.config['MONGODB_USERNAME'] = 'queueme'
-# 	app.config['MONGODB_PASSWORD'] = 'password'
 
-#connect('queueme', host='mongodb://queueme:password@ds031822.mongolab.com:31811/queueme')
 db = MongoEngine(app)
 app.session_interface = MongoEngineSessionInterface(db)
-
 
 flask_bcrypt = Bcrypt(app)
 
