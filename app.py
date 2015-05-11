@@ -82,6 +82,8 @@ def load_user(user_id):
 
 @app.route('/login')
 def login():
+	if current_user.is_authenticated():
+		return redirect('/')
 	return render_template('login.html', request=request)
 
 
@@ -110,10 +112,13 @@ def logout():
 
 @app.route('/signup', methods=['GET'])
 def getSignup():
+	if current_user.is_authenticated():
+		return redirect('/')
 	return render_template('signup.html', request=request)
 
 @app.route('/signup', methods=['POST'])
 def postSignup():
+
 	from models import User
 	first_name, last_name = request.form['first_name'], request.form['last_name']
 	email, password, confirm_password = request.form['email'], request.form['password'], request.form['confirm_password']
