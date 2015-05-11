@@ -5,6 +5,7 @@ OpenQueue is written in the Python-Flask back end framework, uses MongoDB as its
 
 To see a quick demonstration, check out this video tour
 [![OpenQueue Intro Video](http://img.youtube.com/vi/wC44A8lMA9w/0.jpg)](http://www.youtube.com/watch?v=wC44A8lMA9w)
+
 (At the time of recording, OpenQueue was called QueueMe)
 
 ## Installation
